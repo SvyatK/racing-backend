@@ -7,7 +7,8 @@ var User = require('../models/user');
 router.post('/', function (req, res, next) {
     var user = new User({
         login: req.body.login,
-        password: bcrypt.hashSync(req.body.password,2)
+        password: bcrypt.hashSync(req.body.password,bcrypt.genSaltSync(10)),
+        cars:[]
     });
     user.save(function (err,result) {
         if(err){
@@ -44,7 +45,7 @@ router.post('/signin', function (req, res, next) {
             });
         }
 
-        var token = jwt.sign({user:user},'secret-key',{expires:3600});
+        var token = jwt.sign({user:user},'secret-key',{expiresIn:3600});
         res.status(200).json({
             message:'Logged in',
             token:token,

@@ -6,6 +6,7 @@ var Schema = mongoose.Schema;
 var schema = new Schema({
     login:{type:String, required:true, unique:true},
     password:{type:String, required:true}
+   // cars:[{type:Schema.Types.ObjectId, ref:'Cars'}]
 
 });
 

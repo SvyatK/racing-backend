@@ -8,6 +8,7 @@ var mongoose = require('mongoose');
 
 var appRoutes = require('./routes/app');
 var userRoutes = require('./routes/user');
+var carRoutes = require('./routes/car');
 
 var app = express();
 mongoose.connect('test_user:test13@ds151651.mlab.com:51651/racingdb');
@@ -32,12 +33,13 @@ app.use(function (req, res, next) {
 });
 
 app.use('/user',userRoutes);
+app.use('/car',carRoutes);
 app.use('/', appRoutes);
 
-// catch 404 and forward to error handler
+/*// catch 404 and forward to error handler
 app.use(function (req, res, next) {
     return res.render('error');
-});
+});*/
 
 
 module.exports = app;
