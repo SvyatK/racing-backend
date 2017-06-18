@@ -37,7 +37,7 @@ var setSocket = function (data) {
                     items[i] = data;
                 }
             }
-            if(clientsReady == clientCount){
+            if(clientsReady == 2){
                 nextStep(client);
             }
 
