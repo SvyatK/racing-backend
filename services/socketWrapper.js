@@ -89,6 +89,8 @@ var setSocket = function (data) {
             }
             if (this.clientsFinished == 2) {
                 io.emit('raceFinished', this.items[0].result < this.items[1].result ? this.items[0].id : this.items[1].id);
+            } else {
+                this.update(client);
             }
 
         }.bind(this));
