@@ -17,10 +17,10 @@ var setSocket = function (data) {
     io.on('connection', function(client){
         //client.join('room1');
         client.on('readyToStart', function(data){
-            var item = {id:data.id, coordinates:startCoordinates[clientCount]};
+            var item = {id:data.id, coordinates:startCoordinates[this.clientCount]};
             items.push(item);
-            clientCount++;
-            if(clientCount >= 2){
+            this.clientCount++;
+            if(this.clientCount >= 2){
                 nextStep(client);
             }
          /*   if(clientCount>2){
@@ -30,14 +30,14 @@ var setSocket = function (data) {
         })
 
         client.on('nextStep', function(data){
-            clientsReady++
+            this.clientsReady++
             for (i = 0; i < items.length; i++) {
                 var item = items[i];
                 if (item.id == data.id) {
                     items[i] = data;
                 }
             }
-            if(clientsReady == 2){
+            if(this.clientsReady == 2){
                 nextStep(client);
             }
 
