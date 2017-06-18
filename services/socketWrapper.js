@@ -13,15 +13,15 @@ var startCoordinates = [{x:3104, y:2287, rot:-1.49},{x:3175, y:2292, rot:-1.49}]
 
 var setSocket = function (data) {
     io = data;
+    console.log(data);
     io.on('connection', function(client){
         client.on('readyToStart', function(data){
             var item = {id:data.id, coordinates:startCoordinates[clientCount]};
             items.push(item);
             clientCount++;
-            if(clientCount == 2){
+            //if(clientCount == 2){
                 nextStep();
-                startTimeout();
-            }
+            //}
         })
 
         client.on('nextStep', function(data){
@@ -62,7 +62,8 @@ function startTimeout(){
 }
 
 function updateData(){
-    io.in('game').emit('stepComplete', items);
+    io.emit('stepComplete', items);
+    io.broadcast.emit('stepComplete', items);
 }
 
 module.exports = setSocket;
