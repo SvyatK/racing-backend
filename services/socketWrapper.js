@@ -48,9 +48,6 @@ var setSocket = function (data) {
             }
         });
     });
-
-    clientsReady = 0;
-
 }
 
 function nextStep(){
