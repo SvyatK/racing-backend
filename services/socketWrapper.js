@@ -69,9 +69,9 @@ function startTimeout(){
 function updateData(socket){
     //var rooms = Objects.keys(socket.rooms);
     //console.log(rooms); // [ <socket.id>, 'room 237' ]
-    var room = io.sockets.manager.roomClients[socket.id];
-    console.log(room);
-    io.in(room).emit('stepComplete', items);
+    //var room = io.sockets.manager.roomClients[socket.id];
+    //console.log(room);
+    io.in('room1').emit('stepComplete', items);
     //io.broadcast.emit('stepComplete', items);
 }
 
