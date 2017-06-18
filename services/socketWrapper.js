@@ -62,7 +62,7 @@ function startTimeout(){
 }
 
 function updateData(){
-    io.broadcast.emit('stepComplete', items);
+    io.emit('stepComplete', items);
     //io.broadcast.emit('stepComplete', items);
 }
 
