@@ -17,12 +17,12 @@ var setSocket = function (data) {
     io.on('connection', function(client){
         //client.join('room1');
         client.on('readyToStart', function(data){
-            var item = {id:data.id, coordinates:startCoordinates[this.clientCount]};
+            var item = {id:data.id, coordinates:startCoordinates[clientCount]};
             items.push(item);
-            this.clientCount++;
-            if(this.clientCount >= 2){
+            clientCount++;
+            //if(clientCount >= 2){
                 nextStep(client);
-            }
+            //}
          /*   if(clientCount>2){
                 clientCount = 0;
                 items = [];
@@ -30,16 +30,16 @@ var setSocket = function (data) {
         })
 
         client.on('nextStep', function(data){
-            this.clientsReady++
-            for (i = 0; i < items.length; i++) {
+            clientsReady++
+            for (var i = 0; i < items.length; i++) {
                 var item = items[i];
                 if (item.id == data.id) {
                     items[i] = data;
                 }
             }
-            if(this.clientsReady == 2){
+            //if(clientsReady == 2){
                 nextStep(client);
-            }
+            //}
 
         });
         client.on('disconnect', function(id){
