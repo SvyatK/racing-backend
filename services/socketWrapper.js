@@ -21,7 +21,7 @@ var setSocket = function (data) {
             items.push(item);
             clientCount++;
             //if(clientCount >= 2){
-                nextStep(client);
+                update(client);
             //}
          /*   if(clientCount>2){
                 clientCount = 0;
@@ -38,7 +38,7 @@ var setSocket = function (data) {
                 }
             }
             //if(clientsReady == 2){
-                nextStep(client);
+                update(client);
             //}
 
         });
@@ -55,7 +55,7 @@ var setSocket = function (data) {
     });
 }
 
-function nextStep(socket){
+function update(socket){
     clientsReady = 0;
     //clearTimeout(timeout);
     updateData(socket);
