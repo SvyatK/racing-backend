@@ -19,9 +19,9 @@ var setSocket = function (data) {
             var item = {id:data.id, coordinates:startCoordinates[clientCount]};
             items.push(item);
             clientCount++;
-            //if(clientCount == 2){
+            if(clientCount == 2){
                 nextStep();
-            //}
+            }
         })
 
         client.on('nextStep', function(data){
@@ -63,7 +63,7 @@ function startTimeout(){
 
 function updateData(){
     io.emit('stepComplete', items);
-    io.broadcast.emit('stepComplete', items);
+    //io.broadcast.emit('stepComplete', items);
 }
 
 module.exports = setSocket;
