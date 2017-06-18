@@ -20,9 +20,9 @@ var setSocket = function (data) {
             var item = {id:data.id, coordinates:startCoordinates[clientCount]};
             items.push(item);
             clientCount++;
-           // if(clientCount == 2){
+            if(clientCount >= 2){
                 nextStep(client);
-            //}
+            }
          /*   if(clientCount>2){
                 clientCount = 0;
                 items = [];
