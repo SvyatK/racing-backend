@@ -15,13 +15,18 @@ var setSocket = function (data) {
     io = data;
     console.log(data);
     io.on('connection', function(client){
+        client.join('room1');
         client.on('readyToStart', function(data){
             var item = {id:data.id, coordinates:startCoordinates[clientCount]};
             items.push(item);
             clientCount++;
-            //if(clientCount == 2){
-                nextStep();
+           // if(clientCount == 2){
+                nextStep(client);
             //}
+         /*   if(clientCount>2){
+                clientCount = 0;
+                items = [];
+            }*/
         })
 
         client.on('nextStep', function(data){
@@ -33,7 +38,7 @@ var setSocket = function (data) {
                 }
             }
             if(clientsReady == clientCount){
-                nextStep();
+                nextStep(client);
             }
 
         });
@@ -50,19 +55,23 @@ var setSocket = function (data) {
     });
 }
 
-function nextStep(){
+function nextStep(socket){
     clientsReady = 0;
-    clearTimeout(timeout);
-    updateData();
-    startTimeout();
+    //clearTimeout(timeout);
+    updateData(socket);
+    //startTimeout();
 }
 
 function startTimeout(){
-    timeout = setTimeout(nextStep,5000);
+   // timeout = setTimeout(nextStep,5000);
 }
 
-function updateData(){
-    io.emit('stepComplete', items);
+function updateData(socket){
+    //var rooms = Objects.keys(socket.rooms);
+    //console.log(rooms); // [ <socket.id>, 'room 237' ]
+    var room = io.sockets.manager.roomClients[socket.id];
+    console.log(room);
+    io.in(room).emit('stepComplete', items);
     //io.broadcast.emit('stepComplete', items);
 }
 
