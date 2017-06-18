@@ -38,9 +38,9 @@ var setSocket = function (data) {
                     items[i] = data;
                 }
             }
-            //if(clientsReady == 2){
+            if(clientsReady == 2){
                 update(client);
-            //}
+            }
 
         });
         client.on('disconnect', function(id){
