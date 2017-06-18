@@ -84,7 +84,7 @@ var setSocket = function (data) {
             for (var i = 0; i < this.items.length; i++) {
                 var item = this.items[i];
                 if (item.id == data.id) {
-                    this.items[i].result = data;
+                    this.items[i].result = data.stepsCount;
                 }
             }
             if (this.clientsFinished == 2) {
