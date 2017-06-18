@@ -18,7 +18,7 @@ var setSocket = function (data) {
         //client.join('room1');
         client.on('readyToStart', function(data){
             items = [];
-            var item = {id:data.id, coordinates:startCoordinates[clientCount]};
+            var item = {id:data.id, x:startCoordinates[0].x, y:startCoordinates[0].y};
             items.push(item);
             clientCount++;
             //if(clientCount >= 2){
