@@ -15,7 +15,7 @@ var setSocket = function (data) {
     io = data;
     console.log(data);
     io.on('connection', function(client){
-        client.join('room1');
+        //client.join('room1');
         client.on('readyToStart', function(data){
             var item = {id:data.id, coordinates:startCoordinates[clientCount]};
             items.push(item);
@@ -71,7 +71,7 @@ function updateData(socket){
     //console.log(rooms); // [ <socket.id>, 'room 237' ]
     //var room = io.sockets.manager.roomClients[socket.id];
     //console.log(room);
-    io.in('room1').emit('stepComplete', items);
+    io.emit('stepComplete', items);
     //io.broadcast.emit('stepComplete', items);
 }
 
