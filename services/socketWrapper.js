@@ -24,15 +24,15 @@ var setSocket = function (data) {
         //var rooms = Objects.keys(socket.rooms);
         //console.log(rooms); // [ <socket.id>, 'room 237' ]
         //console.log(room);
-        //for (var i = 0; i < this.rooms.length; i++) {
-           // var roomItems = this.rooms[i];
-            //for (var j = 0; j < roomItems.length; j++) {
-                //var item = roomItems[j];
-                //if(item.id == itemData.id){
-                   // io.sockets.in('0').emit('stepComplete', this.items);
-                //}
-            //}
-        //}
+        for (var i = 0; i < this.gameRooms.length; i++) {
+            var roomItems = this.gameRooms[i];
+            for (var j = 0; j < roomItems.length; j++) {
+                var item = roomItems[j];
+                if(item.id == itemData.id){
+                    io.sockets.in(i.toString()).emit('stepComplete', this.items);
+                }
+            }
+        }
 
         //io.broadcast.emit('stepComplete', items);
     }
@@ -49,7 +49,7 @@ var setSocket = function (data) {
             }
             if(this.items.length==0){
                 client.join(this.gameRooms.length.toString());
-                //this.rooms.push(this.items);
+                this.rooms.push(this.items);
             }
             if (!this.clientCount) {
                 this.clientCount = 0;
