@@ -29,7 +29,7 @@ var setSocket = function (data) {
             for (var j = 0; j < roomItems.length; j++) {
                 var item = roomItems[j];
                 if(item.id == itemData.id){
-                    io.sockets.in(i.toString()).emit('stepComplete', this.items);
+                    io.sockets.in(i.toString()).emit('stepComplete', roomItems);
                 }
             }
         }
