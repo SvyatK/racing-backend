@@ -47,8 +47,8 @@ var setSocket = function (data) {
             if (!this.gameRooms) {
                 this.gameRooms = [];
             }
+            client.join(this.gameRooms.length.toString());
             if(this.items.length==0){
-                client.join(this.gameRooms.length.toString());
                 this.gameRooms.push(this.items);
             }
             if (!this.clientCount) {
