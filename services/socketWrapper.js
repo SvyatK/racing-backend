@@ -46,7 +46,7 @@ var setSocket = function (data) {
             }
             if(this.items.length==0){
                 //client.join(this.rooms.length.toString());
-                this.rooms.push(this.items);
+                //this.rooms.push(this.items);
             }
             if (!this.clientCount) {
                 this.clientCount = 0;
