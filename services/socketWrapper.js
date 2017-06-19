@@ -49,7 +49,7 @@ var setSocket = function (data) {
             }
             if(this.items.length==0){
                 client.join(this.gameRooms.length.toString());
-                this.rooms.push(this.items);
+                this.gameRooms.push(this.items);
             }
             if (!this.clientCount) {
                 this.clientCount = 0;
