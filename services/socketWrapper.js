@@ -29,7 +29,7 @@ var setSocket = function (data) {
             //for (var j = 0; j < roomItems.length; j++) {
                 //var item = roomItems[j];
                 //if(item.id == itemData.id){
-                    //io.sockets.in('0').emit('stepComplete', this.items);
+                    io.sockets.in('0').emit('stepComplete', this.items);
                 //}
             //}
         //}
@@ -45,8 +45,8 @@ var setSocket = function (data) {
                 this.items = [];
             }
             if(this.items.length==0){
-                //client.join(this.rooms.length.toString());
-                this.rooms.push(this.items);
+                client.join(this.rooms.length.toString());
+                //this.rooms.push(this.items);
             }
             if (!this.clientCount) {
                 this.clientCount = 0;
@@ -60,9 +60,9 @@ var setSocket = function (data) {
                 y:this.startCoordinates[this.clientCount].y,
                 rotation:this.startCoordinates[this.clientCount].rot
             };
-            //this.items.push(item);
+            this.items.push(item);
             if(this.items.length==2){
-               // this.items = [];
+                this.items = [];
             }
             this.clientCount++;
             if (this.clientCount >= 2){
