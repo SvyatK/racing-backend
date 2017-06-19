@@ -23,14 +23,14 @@ var setSocket = function (data) {
         //console.log(rooms); // [ <socket.id>, 'room 237' ]
         //var room = io.sockets.manager.roomClients[socket.id];
         //console.log(room);
-        io.emit('stepComplete', this.items);
+        io.sockets.in("room1").emit('stepComplete', this.items);
         //io.broadcast.emit('stepComplete', items);
     }
     
     io = data;
     console.log(data);
     io.on('connection', function(client) {
-        //client.join('room1');
+        client.join('room1');
         client.on('readyToStart', function(data) {
             if (!this.items) {
                 this.items = [];
