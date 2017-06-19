@@ -47,10 +47,11 @@ var setSocket = function (data) {
             if (!this.gameRooms) {
                 this.gameRooms = [];
             }
-            client.join(this.gameRooms.length.toString());
             if(this.items.length==0){
                 this.gameRooms.push(this.items);
             }
+            client.join(this.gameRooms.length.toString());
+            
             if (!this.clientCount) {
                 this.clientCount = 0;
             }
@@ -83,11 +84,14 @@ var setSocket = function (data) {
             }
             this.clientsReady++;
             var currentItem;
-            for (var i = 0; i < this.items.length; i++) {
-                var item = this.items[i];
-                if (item.id == data.id) {
-                    this.items[i] = data;
-                    currentItem = data;
+            for (var i = 0; i < this.gameRooms.length; i++) {
+                var roomItems = this.gameRooms[i];
+                for (var j = 0; j < roomItems.length; j++) {
+                    var item = roomItems[j];
+                    if(item.id == itemData.id){
+                        roomItems[j] = data;
+                        currentItem = data;
+                    }
                 }
             }
             if (this.clientsReady == 2){
