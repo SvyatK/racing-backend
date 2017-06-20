@@ -84,7 +84,7 @@ var setSocket = function (data) {
 
             /*if (clientsReady == 2){
                 this.update(currentContainer);
-            */}
+            }*/
 
         }.bind(this));
 
