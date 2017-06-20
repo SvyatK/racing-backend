@@ -34,7 +34,7 @@ var setSocket = function (data) {
             if (!this.roomCount) {
                 this.roomCount = 0;
             }
-            client.join(this.roomCount.toString());
+            //client.join(this.roomCount.toString());
 
             if (!this.startCoordinates) {
                 this.startCoordinates = [{x:3104, y:2287, rot:-1.49},{x:3175, y:2292, rot:-1.49}];
