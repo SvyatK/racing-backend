@@ -31,9 +31,9 @@ var setSocket = function (data) {
             if (!this.items) {
                 this.items = [];
             }
-            if (!this.roomCount) {
+          /*  if (!this.roomCount) {
                 this.roomCount = 0;
-            }
+            }*/
             //client.join(this.roomCount.toString());
 
             if (!this.startCoordinates) {
@@ -82,9 +82,9 @@ var setSocket = function (data) {
                }
             }*/
 
-            if (clientsReady == 2){
+            /*if (clientsReady == 2){
                 this.update(currentContainer);
-            }
+            */}
 
         }.bind(this));
 
