@@ -45,11 +45,11 @@ var setSocket = function (data) {
                 y:this.startCoordinates[this.clientCount].y,
                 rotation:this.startCoordinates[this.clientCount].rot
             };
-            var container = {
+        /*    var container = {
                 roomId: this.roomCount,
                 item: item,
                 ready: false
-            }
+            }*/
             //this.items.push(container);
             /*if(this.items.length%2==0){
                 this.update(container);
