@@ -21,7 +21,7 @@ var setSocket = function (data) {
                 itemsToSend.push(currentContainer.item);
             }
         }
-        if(itemsToSend.length == 2){
+        if(itemsToSend.length >= 2){
             io.sockets.in(itemData.roomId.toString()).emit('stepComplete', itemsToSend);
         }
     }
@@ -67,24 +67,22 @@ var setSocket = function (data) {
             for (var i = 0; i < this.items.length; i++) {
                 var container = this.items[i];
                 if(data.id == container.item.id){
-                    container.item = data;
-                    container.ready = true;
+                    this.items[i].item = data;
+                    this.items[i].ready = true;
                     currentContainer = container;
                 }
             }
 
             //get ready items
-            for (var i = 0; i < this.items.length; i++) {
-                var readyContainer = this.items[i];
-               if(readyContainer.roomId == currentContainer.roomId){
-                   if(readyContainer.ready){
-                       clientsReady++;
-                       readyContainer.ready = false;
-                   }
+            for (var j = 0; j < this.items.length; j++) {
+                var readyContainer = this.items[j];
+               if(readyContainer.roomId == currentContainer.roomId && readyContainer.ready){
+                   clientsReady++;
+                   readyContainer.ready = false;
                }
             }
 
-            if (clientsReady == 2){
+            if (clientsReady >= 2){
                 this.update(currentContainer);
             }
 
