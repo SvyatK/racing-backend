@@ -14,7 +14,7 @@ var setSocket = function (data) {
     }
 
     this.updateData = function updateData(itemData){
-       /* var itemsToSend = [];
+        var itemsToSend = [];
         for (var i = 0; i < this.items.length; i++) {
             var currentContainer = this.items[i];
             if(currentContainer.roomId == itemData.roomId){
@@ -23,7 +23,7 @@ var setSocket = function (data) {
         }
         if(itemsToSend.length == 2){
             io.sockets.in(itemData.roomId.toString()).emit('stepComplete', itemsToSend);
-        }*/
+        }
     }
 
     io = data;
