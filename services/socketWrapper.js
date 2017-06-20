@@ -21,9 +21,9 @@ var setSocket = function (data) {
                 itemsToSend.push(currentContainer.item);
             }
         }
-        //if(itemsToSend.length >= 2){
+        if(itemsToSend.length >= 2){
             io.sockets.in(itemData.roomId.toString()).emit('stepComplete', itemsToSend);
-        //}
+        }
     }
 
     io = data;
