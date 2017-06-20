@@ -1,40 +1,27 @@
 
 var io;
 
-var clientCount=0;
-
-var clientsReady=0;
-
-var timeout;
-
 var items = [];
 
-var gameRooms = [];
+var roomCount = 0;
 
 var setSocket = function (data) {
 
     this.update = function update(itemData){
-        clientsReady = 0;
-        //clearTimeout(timeout);
         this.updateData(itemData);
-        //startTimeout();
     }
 
     this.updateData = function updateData(itemData){
-        //var rooms = Objects.keys(socket.rooms);
-        //console.log(rooms); // [ <socket.id>, 'room 237' ]
-        //console.log(room);
-        for (var i = 0; i < this.gameRooms.length; i++) {
-            var roomItems = this.gameRooms[i];
-            for (var j = 0; j < roomItems.length; j++) {
-                var item = roomItems[j];
-                if(item.id == itemData.id){
-                    io.sockets.in(i.toString()).emit('stepComplete', roomItems);
-                }
+        var itemsToSend = [];
+        for (var i = 0; i < this.items.length; i++) {
+            var currentContainer = this.items[i];
+            if(currentContainer.roomId == itemData.roomId){
+                itemsToSend.push(currentContainer.item);
             }
         }
-
-        //io.broadcast.emit('stepComplete', items);
+        if(itemsToSend.length == 2){
+            io.sockets.in(itemData.roomId.toString()).emit('stepComplete', itemsToSend);
+        }
     }
 
     io = data;
@@ -44,17 +31,11 @@ var setSocket = function (data) {
             if (!this.items) {
                 this.items = [];
             }
-            if (!this.gameRooms) {
-                this.gameRooms = [];
+            if (!this.roomCount) {
+                this.roomCount = 0;
             }
-            if(this.items.length==0){
-                this.gameRooms.push(this.items);
-            }
-            client.join(this.gameRooms.length.toString());
-            
-            if (!this.clientCount) {
-                this.clientCount = 0;
-            }
+            client.join(this.roomCount.toString());
+
             if (!this.startCoordinates) {
                 this.startCoordinates = [{x:3104, y:2287, rot:-1.49},{x:3175, y:2292, rot:-1.49}];
             }
@@ -64,39 +45,45 @@ var setSocket = function (data) {
                 y:this.startCoordinates[this.clientCount].y,
                 rotation:this.startCoordinates[this.clientCount].rot
             };
-            this.items.push(item);
-            if(this.items.length==2){
-                this.items = [];
+            var container = {
+                roomId: this.roomCount,
+                item: item,
+                ready: false
             }
-            this.clientCount++;
-            if (this.clientCount >= 2){
-                this.update(item);
+            this.items.push(container);
+            if(this.items.length%2==0){
+                this.update(container);
+                this.roomCount++;
             }
-         /*   if(clientCount>2){
-                clientCount = 0;
-                items = [];
-            }*/
         }.bind(this));
 
         client.on('nextStep', function(data) {
-            if (!this.clientsReady) {
-                this.clientsReady = 0;
-            }
-            this.clientsReady++;
-            var currentItem;
-            for (var i = 0; i < this.gameRooms.length; i++) {
-                var roomItems = this.gameRooms[i];
-                for (var j = 0; j < roomItems.length; j++) {
-                    var item = roomItems[j];
-                    if(item.id == itemData.id){
-                        roomItems[j] = data;
-                        currentItem = data;
-                    }
+            var clientsReady = 0;
+            var currentContainer;
+
+            //replace item data
+            for (var i = 0; i < this.items.length; i++) {
+                var container = this.items[i];
+                if(data.id == container.item.id){
+                    container.item = data;
+                    container.ready = true;
+                    currentContainer = container;
                 }
             }
-            if (this.clientsReady == 2){
-                this.update(currentItem);
-                this.clientsReady = 0;
+
+            //get ready items
+            for (var i = 0; i < this.items.length; i++) {
+                var readyContainer = this.items[i];
+               if(readyContainer.roomId == currentContainer.roomId){
+                   if(readyContainer.ready){
+                       clientsReady++;
+                       readyContainer.ready = false;
+                   }
+               }
+            }
+
+            if (clientsReady == 2){
+                this.update(currentContainer);
             }
 
         }.bind(this));
@@ -120,20 +107,9 @@ var setSocket = function (data) {
 
         }.bind(this));
         client.on('disconnect', function(id){
-            clientCount--;
-            for (i = 0; i < items.length; i++) {
-                var item = items[i];
-                if(item.id == id){
-                    items.slice(i,1);
-                    break;
-                }
-            }
+            //TODO: implement disconnect
         });
     }.bind(this));
-}
-
-function startTimeout(){
-   // timeout = setTimeout(nextStep,5000);
 }
 
 module.exports = setSocket;
