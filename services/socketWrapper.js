@@ -50,7 +50,7 @@ var setSocket = function (data) {
                 item: item,
                 ready: false
             }
-            this.items.push(container);
+            //this.items.push(container);
             /*if(this.items.length%2==0){
                 this.update(container);
                 this.roomCount++;
