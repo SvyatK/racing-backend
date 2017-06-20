@@ -36,15 +36,15 @@ var setSocket = function (data) {
             }*/
             //client.join(this.roomCount.toString());
 
-         /*   if (!this.startCoordinates) {
+            /*if (!this.startCoordinates) {
                 this.startCoordinates = [{x:3104, y:2287, rot:-1.49},{x:3175, y:2292, rot:-1.49}];
-            }
+            }*/
             var item = {
                 id:data.id,
                 x:this.startCoordinates[this.clientCount].x,
                 y:this.startCoordinates[this.clientCount].y,
                 rotation:this.startCoordinates[this.clientCount].rot
-            };*/
+            };
         /*    var container = {
                 roomId: this.roomCount,
                 item: item,
