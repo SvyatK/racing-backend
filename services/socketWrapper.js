@@ -63,7 +63,7 @@ var setSocket = function (data) {
             var clientsReady = 0;
             var currentContainer;
 
-           /* //replace item data
+            //replace item data
             for (var i = 0; i < this.items.length; i++) {
                 var container = this.items[i];
                 if(data.id == container.item.id){
@@ -82,11 +82,11 @@ var setSocket = function (data) {
                        readyContainer.ready = false;
                    }
                }
-            }*/
+            }
 
-            /*if (clientsReady == 2){
+            if (clientsReady == 2){
                 this.update(currentContainer);
-            }*/
+            }
 
         }.bind(this));
 
