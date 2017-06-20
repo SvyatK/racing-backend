@@ -58,8 +58,8 @@ var setSocket = function (data) {
         }.bind(this));
 
         client.on('nextStep', function(data) {
-            //var clientsReady = 0;
-            //var currentContainer;
+            var clientsReady = 0;
+            var currentContainer;
 
            /* //replace item data
             for (var i = 0; i < this.items.length; i++) {
