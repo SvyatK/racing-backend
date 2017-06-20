@@ -33,10 +33,10 @@ var setSocket = function (data) {
             if (!this.items) {
                 this.items = [];
             }
-          /*  if (!this.roomCount) {
+            if (!this.roomCount) {
                 this.roomCount = 0;
-            }*/
-            //client.join(this.roomCount.toString());
+            }
+            client.join(this.roomCount.toString());
 
             if (!this.startCoordinates) {
                 this.startCoordinates = [{x:3104, y:2287, rot:-1.49},{x:3175, y:2292, rot:-1.49}];
@@ -47,16 +47,16 @@ var setSocket = function (data) {
                 y:this.startCoordinates[this.items.length%2?0:1].y,
                 rotation:this.startCoordinates[this.items.length%2?0:1].rot
             };
-        /*    var container = {
+            var container = {
                 roomId: this.roomCount,
                 item: item,
                 ready: false
-            }*/
-            //this.items.push(container);
-            /*if(this.items.length%2==0){
+            }
+            this.items.push(container);
+            if(this.items.length%2==0){
                 this.update(container);
                 this.roomCount++;
-            }*/
+            }
         }.bind(this));
 
         client.on('nextStep', function(data) {
