@@ -34,7 +34,7 @@ var setSocket = function (data) {
             if (!this.roomCount) {
                 this.roomCount = 0;
             }
-            //client.join(this.roomCount.toString());
+            client.join(this.roomCount.toString());
 
             if (!this.startCoordinates) {
                 this.startCoordinates = [{x:3104, y:2287, rot:-1.49},{x:3175, y:2292, rot:-1.49}];
@@ -61,7 +61,7 @@ var setSocket = function (data) {
             var clientsReady = 0;
             var currentContainer;
 
-            //replace item data
+           /* //replace item data
             for (var i = 0; i < this.items.length; i++) {
                 var container = this.items[i];
                 if(data.id == container.item.id){
@@ -80,7 +80,7 @@ var setSocket = function (data) {
                        readyContainer.ready = false;
                    }
                }
-            }
+            }*/
 
             if (clientsReady == 2){
                 this.update(currentContainer);
