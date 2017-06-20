@@ -51,10 +51,10 @@ var setSocket = function (data) {
                 ready: false
             }
             this.items.push(container);
-            if(this.items.length%2==0){
+            /*if(this.items.length%2==0){
                 this.update(container);
                 this.roomCount++;
-            }
+            }*/
         }.bind(this));
 
         client.on('nextStep', function(data) {
