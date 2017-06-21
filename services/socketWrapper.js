@@ -78,15 +78,22 @@ var setSocket = function (data) {
             //get ready items
             for (var j = 0; j < this.items.length; j++) {
                 var readyContainer = this.items[j];
-                io.emit('onTest', readyContainer.roomId);
+                io.emit('onTest', readyContainer);
                if(readyContainer.roomId == currentContainer.roomId && readyContainer.ready){
                    clientsReady++;
-                   readyContainer.ready = false;
                }
             }
             io.emit('onTest', clientsReady);
 
             if (clientsReady >= 2){
+                //setting ready false
+                for (var k = 0; k < this.items.length; k++) {
+                    var readyContainer = this.items[k];
+                    if (readyContainer.roomId == currentContainer.roomId) {
+                        readyContainer.ready = false
+                    }
+                }
+
                 this.update(currentContainer);
             }
 
