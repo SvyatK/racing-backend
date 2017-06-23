@@ -45,12 +45,14 @@ var setSocket = function (data) {
                 id:data.id,
                 x:this.startCoordinates[this.items.length%2==0?0:1].x,
                 y:this.startCoordinates[this.items.length%2?0:1].y,
-                rotation:this.startCoordinates[this.items.length%2?0:1].rot
+                rotation:this.startCoordinates[this.items.length%2?0:1].rot,
+                name: data.name
             };
             var container = {
                 roomId: this.roomCount,
                 item: item,
-                ready: false
+                ready: false,
+                finished: false
             }
             this.items.push(container);
             if(this.items.length%2==0){
@@ -100,21 +102,14 @@ var setSocket = function (data) {
         }.bind(this));
 
         client.on('finished', function(data) {
-            if (!this.clientsFinished) {
-                this.clientsFinished = 0;
-            }
-            this.clientsFinished++;
+            var currentRoom;
             for (var i = 0; i < this.items.length; i++) {
-                var item = this.items[i];
-                if (item.id == data.id) {
-                    this.items[i].result = data.stepsCount;
+                var currentContainer = this.items[i];
+                if(currentContainer.item.id == data.id){
+                    currentRoom = currentContainer.roomId;
                 }
             }
-            if (this.clientsFinished == 2) {
-                io.emit('raceFinished', this.items[0].result < this.items[1].result ? this.items[0].id : this.items[1].id);
-            } else {
-                this.update(client);
-            }
+            io.sockets.in(currentRoom.toString()).emit('raceFinished', data.id);
 
         }.bind(this));
         client.on('disconnect', function(id){
