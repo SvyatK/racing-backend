@@ -5,7 +5,7 @@ var items = [];
 
 var roomCount = 0;
 
-var startCoordinates = startCoordinates = [{x:3104, y:2287, rot:-1.49},{x:3175, y:2292, rot:-1.49}];
+var startCoordinates = startCoordinates = [{x:1056, y:-239, rot:1.49},{x:1127, y:-244, rot:1.49}];
 
 var setSocket = function (data) {
 
@@ -39,7 +39,7 @@ var setSocket = function (data) {
             client.join(this.roomCount.toString());
 
             if (!this.startCoordinates) {
-                this.startCoordinates = [{x:3104, y:2287, rot:-1.49},{x:3175, y:2292, rot:-1.49}];
+                this.startCoordinates = [{x:1056, y:-239, rot:1.49},{x:1127, y:-244, rot:1.49}];
             }
             var item = {
                 id:data.id,
