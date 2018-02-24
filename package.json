@@ -3,33 +3,35 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "node ./bin/www",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "start:watch": "nodemon",
+    "prestart:prod": "tsc",
+    "start:prod": "node dist/main.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/SvyatK/racing-backend.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/SvyatK/racing-backend/issues"
-  },
-  "homepage": "https://github.com/SvyatK/racing-backend#readme",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "body-parser": "~1.15.2",
-    "cookie-parser": "~1.4.3",
-    "core-js": "^2.4.1",
-    "debug": "~2.2.0",
-    "express": "^4.15.3",
-    "hbs": "~3.1.0",
-    "jsonwebtoken": "^7.4.1",
-    "mongoose": "^4.10.6",
-    "mongoose-unique-validator": "^1.0.5",
-    "morgan": "~1.6.1",
-    "reflect-metadata": "^0.1.3",
-    "serve-favicon": "~2.3.0",
-    "socket.io": "^2.0.3"
+    "@nestjs/common": "^4.5.9",
+    "@nestjs/core": "^4.5.10",
+    "@nestjs/microservices": "^4.5.8",
+    "@nestjs/swagger": "^1.1.4",
+    "@nestjs/testing": "^4.5.5",
+    "@nestjs/websockets": "^4.5.8",
+    "bcrypt": "^1.0.3",
+    "cors": "^2.8.4",
+    "lodash": "^4.17.5",
+    "mongoose": "^5.0.6",
+    "redis": "^2.7.1",
+    "reflect-metadata": "^0.1.12",
+    "rxjs": "^5.5.6",
+    "socket.io": "^2.0.4",
+    "typescript": "^2.6.2"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^1.0.0",
+    "@types/lodash": "^4.14.104",
+    "@types/mongoose": "^5.0.2",
+    "@types/node": "^9.3.0",
+    "@types/socket.io": "^1.4.31",
+    "nodemon": "^1.14.1",
+    "ts-node": "^4.1.0"
   }
 }
