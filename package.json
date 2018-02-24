@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start:dev": "node index.js",
-    "start": "tsc && node dist/main.js",
+    "start": "node index.js",
     "start:watch": "nodemon",
     "prestart:prod": "tsc",
     "start:prod": "node dist/main.js"
@@ -24,9 +23,7 @@
     "reflect-metadata": "^0.1.12",
     "rxjs": "^5.5.6",
     "socket.io": "^2.0.4",
-    "typescript": "^2.6.2"
-  },
-  "devDependencies": {
+    "typescript": "^2.6.2",
     "@types/bcrypt": "^1.0.0",
     "@types/lodash": "^4.14.104",
     "@types/mongoose": "^5.0.2",
@@ -34,5 +31,7 @@
     "@types/socket.io": "^1.4.31",
     "nodemon": "^1.14.1",
     "ts-node": "^4.1.0"
+  },
+  "devDependencies": {
   }
 }
