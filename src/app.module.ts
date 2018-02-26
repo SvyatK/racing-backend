@@ -7,6 +7,7 @@ import { CarService } from './app/services/car.service';
 import { CorsMiddleware } from './app/middlewares/cors.middleware';
 import { MainGateway } from './app/gateways/main.gateway';
 import { GameplayService } from './app/services/gameplay.service';
+import { SessionMiddleware } from './app/middlewares/session.middleware';
 
 @Module({
     imports: [],
@@ -27,6 +28,11 @@ import { GameplayService } from './app/services/gameplay.service';
 export class ApplicationModule {
     configure(consumer: MiddlewaresConsumer): void {
         consumer.apply(CorsMiddleware)
+                .forRoutes({
+                    path: '*',
+                    method: RequestMethod.ALL
+                });
+        consumer.apply(SessionMiddleware)
                 .forRoutes({
                     path: '*',
                     method: RequestMethod.ALL

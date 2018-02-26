@@ -1,3 +1,4 @@
+import { Request as ExpressRequest } from 'express';
 import { Component, HttpException } from '@nestjs/common';
 import { RegisterDTO } from '../dto/requests/register.dto';
 import { OwnUserDataDTO } from '../dto/responses/own-user-data.dto';
@@ -11,7 +12,7 @@ export class UserService {
     constructor(private readonly userDao: UserDao) {
     }
 
-    async register(registerDTO: RegisterDTO): Promise<OwnUserDataDTO> {
+    async register(req: ExpressRequest, registerDTO: RegisterDTO): Promise<OwnUserDataDTO> {
         let user: IUser;
         try {
             user = await this.userDao.createUser(
@@ -24,11 +25,12 @@ export class UserService {
         } catch (err) {
             throw new HttpException('An error occured during user saving', 500);
         }
-        // TODO establish session
-        return OwnUserDataDTO.fromUser(user);
+        const ownUserData: OwnUserDataDTO = OwnUserDataDTO.fromUser(user);
+        this.setSessionUser(req, ownUserData);
+        return ownUserData;
     }
 
-    async login(loginDTO: LoginDTO): Promise<OwnUserDataDTO> {
+    async login(req: ExpressRequest, loginDTO: LoginDTO): Promise<OwnUserDataDTO> {
         let user: IUser;
         try {
             user = await this.userDao.getUserByLogin(loginDTO.login);
@@ -41,8 +43,14 @@ export class UserService {
         if ( !compare(loginDTO.password, user.password) ) {
             throw new HttpException('invalid credentials', 401);
         }
-        // TODO establish session
-        return OwnUserDataDTO.fromUser(user);
+        const ownUserData: OwnUserDataDTO = OwnUserDataDTO.fromUser(user);
+        this.setSessionUser(req, ownUserData);
+        return ownUserData;
+    }
+
+    private setSessionUser(req: ExpressRequest, ownUserData: OwnUserDataDTO): void {
+        req.session.key = ownUserData._id;
+        req.session.user = ownUserData;
     }
 
 }
