@@ -1,4 +1,5 @@
 import { Component } from '@nestjs/common';
+import { OwnUserDataDTO } from '../dto/responses/own-user-data.dto';
 
 @Component()
 export class GameplayService {
@@ -21,11 +22,13 @@ export class GameplayService {
     }
 
     async clientConnected(io: SocketIO.Server, socket: SocketIO.Socket): Promise<void> {
-        console.log(`client' ${socket.client.id} connected`);
+        const user: OwnUserDataDTO = socket.client.request.session.user;
+        console.log(`Client '${user.login}' connected via socket connection ${socket.client.id}`)
     }
 
     async clientDisconnected(io: SocketIO.Server, socket: SocketIO.Socket): Promise<void> {
-        console.log(`client' ${socket.client.id} disconnected`);
+        const user: OwnUserDataDTO = socket.client.request.session.user;
+        console.log(`Client '${user.login}' disconnected (socket connection ${socket.client.id})`);
     }
 
     // TODO data type

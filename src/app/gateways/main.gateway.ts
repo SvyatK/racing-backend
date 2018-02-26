@@ -1,13 +1,12 @@
 import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { GameplayService } from '../services/gameplay.service';
+import { SocketSessionMiddleware } from '../middlewares/session.middleware';
 
-@WebSocketGateway()
+@WebSocketGateway({
+    // port: 2000,
+    middlewares: [ SocketSessionMiddleware ]
+})
 export class MainGateway implements OnGatewayConnection, OnGatewayDisconnect {
-
-    //TODO move all logic to service!!!
-    private items: any[] = [];
-    private roomCount: number = 0;
-    private startCoordinates: any[];
 
     @WebSocketServer()
     private io: SocketIO.Server;

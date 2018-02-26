@@ -1,18 +1,33 @@
-import { ExpressMiddleware, Middleware, NestMiddleware } from '@nestjs/common';
+import { Middleware, NestMiddleware } from '@nestjs/common';
+import { RequestHandler } from 'express';
+import { GatewayMiddleware } from '@nestjs/websockets';
 import session = require('express-session');
+import connectRedis = require('connect-redis');
+
+const redisStore = connectRedis(session);
+
+const SESSION_MIDDLEWARE_FUNCTION: RequestHandler = session({
+    secret: '124312edr1123rfdweqrqwerqwer3e12e41242112',
+    resave: false,
+    saveUninitialized: false,
+    store: new redisStore({
+        logErrors: true
+    }),
+    cookie: { secure: false }
+});
 
 @Middleware()
 export class SessionMiddleware implements NestMiddleware {
-    resolve(...args: any[]): ExpressMiddleware {
-        console.log('Setting up session middleware');
-        return session({
-            secret: '124312edr1123rfdweqrqwerqwer3e12e41242112',
-            resave: false,
-            saveUninitialized: false,
-            // store: new redisStore({
-            //     logErrors: true
-            // }),
-            cookie: { secure: false }
-        });
+    resolve(...args: any[]): RequestHandler {
+        return SESSION_MIDDLEWARE_FUNCTION;
+    }
+}
+
+@Middleware()
+export class SocketSessionMiddleware implements GatewayMiddleware {
+    public resolve(): (socket, next) => void {
+        return (socket, next) => {
+            SESSION_MIDDLEWARE_FUNCTION(socket.request, socket.request.res, next);
+        };
     }
 }
