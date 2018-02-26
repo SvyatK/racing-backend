@@ -15,6 +15,10 @@ export class UserDao {
         });
     }
 
+    async getUserById(id: string): Promise<IUser> {
+        return this.userModel.findById(id);
+    }
+
     async getUserByLogin(login: string): Promise<IUser> {
         return this.userModel.findOne({
             login

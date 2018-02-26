@@ -3,7 +3,7 @@ import { IsNumber, IsString } from 'class-validator';
 import * as _ from 'lodash';
 import { ICar } from '../../business/interfaces/car.interface';
 
-export class CarDataDto {
+export class CarDataDTO {
 
     @ApiModelProperty({ type: String })
     @IsString()
@@ -25,7 +25,7 @@ export class CarDataDto {
     @IsNumber()
     readonly steering: number;
 
-    static fromCar(car: ICar): CarDataDto {
+    static fromCar(car: ICar): CarDataDTO {
         return _.pick(car, [ 'name', 'image', 'max_acceleration', 'max_deceleration', 'steering' ]);
     }
 

@@ -1,6 +1,6 @@
 import { Component } from '@nestjs/common';
 import { CarDao } from '../business/dao/car.dao';
-import { CarDataDto } from '../dto/responses/car-data.dto';
+import { CarDataDTO } from '../dto/responses/car-data.dto';
 import { ICar } from '../business/interfaces/car.interface';
 
 @Component()
@@ -8,10 +8,10 @@ export class CarService {
     constructor(private readonly carDao: CarDao) {
     }
 
-    async getAllCars(): Promise<CarDataDto[]> {
+    async getAllCars(): Promise<CarDataDTO[]> {
         const cars: ICar[] = await this.carDao.getAllCars();
-        return cars.map((car: ICar): CarDataDto => {
-            return CarDataDto.fromCar(car);
+        return cars.map((car: ICar): CarDataDTO => {
+            return CarDataDTO.fromCar(car);
         });
     }
 

@@ -1,5 +1,4 @@
 import { MiddlewaresConsumer, Module, RequestMethod } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { UserController } from './app/controllers/user.controller';
 import { UserService } from './app/services/user.service';
 import { DatabaseModule } from './app/business/database.module';
@@ -12,7 +11,6 @@ import { GameplayService } from './app/services/gameplay.service';
 @Module({
     imports: [],
     controllers: [
-        AppController,
         UserController,
         CarController
     ],

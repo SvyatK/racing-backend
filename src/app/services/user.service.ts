@@ -1,23 +1,23 @@
 import { Component, HttpException } from '@nestjs/common';
 import { RegisterDTO } from '../dto/requests/register.dto';
-import { OwnUserDataDto } from '../dto/responses/own-user-data.dto';
+import { OwnUserDataDTO } from '../dto/responses/own-user-data.dto';
 import { UserDao } from '../business/dao/user.dao';
 import { compare, genSaltSync, hashSync } from 'bcrypt';
 import { IUser } from '../business/interfaces/user.interface';
-import { LoginDto } from '../dto/requests/login.dto';
+import { LoginDTO } from '../dto/requests/login.dto';
 
 @Component()
 export class UserService {
     constructor(private readonly userDao: UserDao) {
     }
 
-    async register(registerDto: RegisterDTO): Promise<OwnUserDataDto> {
+    async register(registerDTO: RegisterDTO): Promise<OwnUserDataDTO> {
         let user: IUser;
         try {
             user = await this.userDao.createUser(
-                registerDto.login,
+                registerDTO.login,
                 hashSync(
-                    registerDto.password,
+                    registerDTO.password,
                     genSaltSync(10)
                 )
             );
@@ -25,24 +25,24 @@ export class UserService {
             throw new HttpException('An error occured during user saving', 500);
         }
         // TODO establish session
-        return OwnUserDataDto.fromUser(user);
+        return OwnUserDataDTO.fromUser(user);
     }
 
-    async login(loginDto: LoginDto): Promise<OwnUserDataDto> {
+    async login(loginDTO: LoginDTO): Promise<OwnUserDataDTO> {
         let user: IUser;
         try {
-            user = await this.userDao.getUserByLogin(loginDto.login);
+            user = await this.userDao.getUserByLogin(loginDTO.login);
         } catch (err) {
             throw new HttpException('An error occured during signin', 500);
         }
         if ( !user ) {
             throw new HttpException('invalid credentials', 401);
         }
-        if ( !compare(loginDto.password, user.password) ) {
+        if ( !compare(loginDTO.password, user.password) ) {
             throw new HttpException('invalid credentials', 401);
         }
         // TODO establish session
-        return OwnUserDataDto.fromUser(user);
+        return OwnUserDataDTO.fromUser(user);
     }
 
 }

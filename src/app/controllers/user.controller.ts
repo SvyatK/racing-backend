@@ -2,8 +2,8 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { ApiOperation, ApiProduces, ApiResponse } from '@nestjs/swagger';
 import { RegisterDTO } from '../dto/requests/register.dto';
 import { UserService } from '../services/user.service';
-import { OwnUserDataDto } from '../dto/responses/own-user-data.dto';
-import { LoginDto } from '../dto/requests/login.dto';
+import { OwnUserDataDTO } from '../dto/responses/own-user-data.dto';
+import { LoginDTO } from '../dto/requests/login.dto';
 
 @Controller('user')
 export class UserController {
@@ -20,9 +20,9 @@ export class UserController {
         status: 500,
         description: 'An error occured during user saving'
     })
-    @ApiProduces('OwnUserDataDto')
-    async register(@Body() registerDto: RegisterDTO): Promise<OwnUserDataDto> {
-        return this.userService.register(registerDto);
+    @ApiProduces('OwnUserDataDTO')
+    async register(@Body() registerDTO: RegisterDTO): Promise<OwnUserDataDTO> {
+        return this.userService.register(registerDTO);
     }
 
     @Post('login')
@@ -39,8 +39,8 @@ export class UserController {
         status: 500,
         description: 'An error occured during signin'
     })
-    @ApiProduces('OwnUserDataDto')
-    async login(@Body() loginDto: LoginDto): Promise<OwnUserDataDto> {
-        return this.userService.login(loginDto);
+    @ApiProduces('OwnUserDataDTO')
+    async login(@Body() loginDTO: LoginDTO): Promise<OwnUserDataDTO> {
+        return this.userService.login(loginDTO);
     }
 }

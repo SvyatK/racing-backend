@@ -1,6 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiProduces, ApiResponse } from '@nestjs/swagger';
-import { CarDataDto } from '../dto/responses/car-data.dto';
+import { CarDataDTO } from '../dto/responses/car-data.dto';
 import { CarService } from '../services/car.service';
 
 @Controller('car')
@@ -14,8 +14,8 @@ export class CarController {
         status: 200,
         description: 'Ok'
     })
-    @ApiProduces('CarDataDto[]')
-    async getAllCars(): Promise<CarDataDto[]> {
+    @ApiProduces('CarDataDTO[]')
+    async getAllCars(): Promise<CarDataDTO[]> {
         return this.carService.getAllCars();
     }
 
