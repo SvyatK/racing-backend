@@ -13,13 +13,8 @@ export class OwnUserDataDTO {
     @IsString()
     readonly login: string;
 
-    // TODO remove this field
-    @ApiModelProperty({ type: String })
-    @IsString()
-    readonly password: string;
-
     static fromUser (user: IUser): OwnUserDataDTO {
-        return _.pick(user, ['_id', 'login', 'password'])
+        return _.pick(user, ['_id', 'login'])
     }
 
 }
