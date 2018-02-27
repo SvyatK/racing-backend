@@ -11,6 +11,7 @@ const SESSION_MIDDLEWARE_FUNCTION: RequestHandler = session({
     resave: false,
     saveUninitialized: false,
     store: new redisStore({
+        url: process.env.REDIS_URL || 'redis://localhost:6379',
         logErrors: true
     }),
     cookie: { secure: false }
