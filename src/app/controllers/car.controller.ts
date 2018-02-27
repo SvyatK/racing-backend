@@ -1,9 +1,11 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiProduces, ApiResponse } from '@nestjs/swagger';
 import { CarDataDTO } from '../dto/responses/car-data.dto';
 import { CarService } from '../services/car.service';
+import { AuthenticationGuard } from '../middlewares/guards/authentication.guard';
 
 @Controller('car')
+@UseGuards(AuthenticationGuard)
 export class CarController {
     constructor(private readonly carService: CarService) {
     }
