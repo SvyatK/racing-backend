@@ -2,17 +2,17 @@ import { Middleware, NestMiddleware } from '@nestjs/common';
 import { RequestHandler } from 'express';
 import { GatewayMiddleware } from '@nestjs/websockets';
 import session = require('express-session');
-// import connectRedis = require('connect-redis');
+import connectRedis = require('connect-redis');
 
-// const redisStore = connectRedis(session);
+const redisStore = connectRedis(session);
 
 const SESSION_MIDDLEWARE_FUNCTION: RequestHandler = session({
     secret: '124312edr1123rfdweqrqwerqwer3e12e41242112',
     resave: false,
     saveUninitialized: false,
-    // store: new redisStore({
-    //     logErrors: true
-    // }),
+    store: new redisStore({
+        logErrors: true
+    }),
     cookie: { secure: false }
 });
 
