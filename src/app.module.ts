@@ -1,6 +1,5 @@
 import { MiddlewaresConsumer, Module, RequestMethod } from '@nestjs/common';
-import { UserController } from './app/controllers/user.controller';
-import { UserService } from './app/services/user.service';
+import { AuthService } from './app/services/auth.service';
 import { DatabaseModule } from './app/business/database.module';
 import { CarController } from './app/controllers/car.controller';
 import { CarService } from './app/services/car.service';
@@ -8,16 +7,17 @@ import { CorsMiddleware } from './app/middlewares/cors.middleware';
 import { MainGateway } from './app/gateways/main.gateway';
 import { GameplayService } from './app/services/gameplay.service';
 import { SessionMiddleware } from './app/middlewares/session.middleware';
+import { AuthController } from './app/controllers/auth.controller';
 
 @Module({
     imports: [],
     controllers: [
-        UserController,
+        AuthController,
         CarController
     ],
     components: [
         MainGateway,
-        UserService,
+        AuthService,
         CarService,
         GameplayService
     ],

@@ -2,13 +2,13 @@ import { Request as ExpressRequest } from 'express';
 import { Body, Controller, Post, Req } from '@nestjs/common';
 import { ApiOperation, ApiProduces, ApiResponse } from '@nestjs/swagger';
 import { RegisterDTO } from '../dto/requests/register.dto';
-import { UserService } from '../services/user.service';
+import { AuthService } from '../services/auth.service';
 import { OwnUserDataDTO } from '../dto/responses/own-user-data.dto';
 import { LoginDTO } from '../dto/requests/login.dto';
 
-@Controller('user')
-export class UserController {
-    constructor(private readonly userService: UserService) {
+@Controller('auth')
+export class AuthController {
+    constructor(private readonly authService: AuthService) {
     }
 
     @Post('register')
@@ -23,7 +23,7 @@ export class UserController {
     })
     @ApiProduces('OwnUserDataDTO')
     async register(@Req() req: ExpressRequest, @Body() registerDTO: RegisterDTO): Promise<OwnUserDataDTO> {
-        return this.userService.register(req, registerDTO);
+        return this.authService.register(req, registerDTO);
     }
 
     @Post('login')
@@ -42,6 +42,6 @@ export class UserController {
     })
     @ApiProduces('OwnUserDataDTO')
     async login(@Req() req: ExpressRequest, @Body() loginDTO: LoginDTO): Promise<OwnUserDataDTO> {
-        return this.userService.login(req, loginDTO);
+        return this.authService.login(req, loginDTO);
     }
 }

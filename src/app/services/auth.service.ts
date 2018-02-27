@@ -8,7 +8,7 @@ import { IUser } from '../business/interfaces/user.interface';
 import { LoginDTO } from '../dto/requests/login.dto';
 
 @Component()
-export class UserService {
+export class AuthService {
     constructor(private readonly userDao: UserDao) {
     }
 
