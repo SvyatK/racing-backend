@@ -11,7 +11,11 @@ export class CarController {
     }
 
     @Get()
-    @ApiOperation({ title: 'Get all cars available' })
+    @ApiOperation({ title: 'Get all available cars' })
+    @ApiResponse({
+        status: 401,
+        description: 'Please login first'
+    })
     @ApiResponse({
         status: 200,
         description: 'Ok'

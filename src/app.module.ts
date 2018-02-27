@@ -8,17 +8,21 @@ import { MainGateway } from './app/gateways/main.gateway';
 import { GameplayService } from './app/services/gameplay.service';
 import { SessionMiddleware } from './app/middlewares/session.middleware';
 import { AuthController } from './app/controllers/auth.controller';
+import { LobbyService } from './app/services/lobby.service';
+import { LobbyController } from './app/controllers/lobby.controller';
 
 @Module({
     imports: [],
     controllers: [
         AuthController,
-        CarController
+        CarController,
+        LobbyController
     ],
     components: [
         MainGateway,
         AuthService,
         CarService,
+        LobbyService,
         GameplayService
     ],
     modules: [
