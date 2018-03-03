@@ -9,6 +9,7 @@ import { ChildProcess, fork } from 'child_process';
 import * as path from 'path';
 import { GamingServersManager } from '../managers/gaming-servers.manager';
 import { ChildProcessMessage } from '../../gaming-worker/consts/child-process-message.const';
+import { AppUtils } from '../utils/app.utils';
 
 @Component()
 export class LobbyService {
@@ -40,29 +41,46 @@ export class LobbyService {
         }
         lobbyModel.serverUrl = `${process.env.SERVER_URL || 'http://localhost'}:${port}`;
         await lobbyModel.save();
-
+        let gamingProcess: ChildProcess;
         try {
-            const process: ChildProcess = await this.startGamingServer(lobbyModel, port);
-            process.on('close', () => {
+            gamingProcess = await this.startGamingServer(lobbyModel, port, userModel);
+            gamingProcess.on('close', () => {
                 console.log(`Gaming server for lobby ${lobbyModel._id} closed`);
                 this.gamingServersManager.releasePort(lobbyModel._id);
             });
             return LobbyDTO.fromLobby(lobbyModel);
         } catch (err) {
+            if ( gamingProcess ) {
+                gamingProcess.kill();
+            }
+            this.gamingServersManager.releasePort(lobbyModel._id);
             throw new HttpException('Gaming server start failed. Try again later', HttpStatus.GONE);
         }
     }
 
-    async startGamingServer(lobbyModel: ILobby, port: number): Promise<ChildProcess> {
-        return new Promise<ChildProcess>((resolve, reject) => {
-            const forked: ChildProcess = fork(path.join(__dirname, '../../../index-worker.js'), [ lobbyModel._id, port ]);
-            forked.once('message', (msg) => {
-                if (msg === ChildProcessMessage.STARTED) {
-                    resolve(forked);
-                } else {
-                    reject(msg);
-                }
-            });
+    async startGamingServer(lobbyModel: ILobby, port: number, owner: IUser): Promise<ChildProcess> {
+        // automatically rejects in 10 seconds if nothing happen
+        return new Promise<ChildProcess>(async (resolve, reject) => {
+            const forked: ChildProcess = fork(path.join(__dirname, '../../../index-worker.js'), [ lobbyModel._id, port, owner._id ]);
+            try {
+                await AppUtils.doWithFailTimeout<void>(
+                    new Promise<void>((resolve, reject) => {
+                        forked.once('message', (msg) => {
+                            if ( msg === ChildProcessMessage.STARTED ) {
+                                resolve();
+                            } else {
+                                forked.kill();
+                                reject(msg);
+                            }
+                        });
+                    }),
+                    10000
+                );
+                resolve(forked);
+            } catch (err) {
+                forked.kill();
+                reject();
+            }
         });
     }
 
