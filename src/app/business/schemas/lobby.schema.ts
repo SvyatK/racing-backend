@@ -10,8 +10,7 @@ export const LobbySchema = new mongoose.Schema({
         required: true
     },
     serverUrl: {
-        type: String,
-        required: true
+        type: String
     },
     state: {
         type: Number,

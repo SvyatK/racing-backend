@@ -10,10 +10,9 @@ export class LobbyDao {
     constructor(@Inject('LobbyModelToken') private readonly lobbyModel: Model<ILobby>) {
     }
 
-    async create(owner: IUser, serverUrl: string): Promise<ILobby> {
+    async create(owner: IUser): Promise<ILobby> {
         return this.lobbyModel.create({
             name: owner.login,
-            serverUrl: serverUrl,
             owner: owner
         });
     }
@@ -24,6 +23,10 @@ export class LobbyDao {
                        state: GameState.WaitingForPlayers
                    })
                    .populate({ path: 'owner' });
+    }
+
+    async delete(lobby: ILobby): Promise<ILobby> {
+        return lobby.remove();
     }
 
 }

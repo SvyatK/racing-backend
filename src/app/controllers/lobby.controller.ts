@@ -25,6 +25,10 @@ export class LobbyController {
         status: 406,
         description: 'Server overloaded. Try again later'
     })
+    @ApiResponse({
+        status: 410,
+        description: 'Gaming server start failed. Try again later'
+    })
     @ApiProduces('LobbyDTO')
     async createLobby(@Req() req: ExpressRequest): Promise<LobbyDTO> {
         return this.lobbyService.createLobby(req);
@@ -50,6 +54,10 @@ export class LobbyController {
     @ApiResponse({
         status: 406,
         description: 'Server overloaded. Try again later'
+    })
+    @ApiResponse({
+        status: 410,
+        description: 'Gaming server start failed. Try again later'
     })
     @ApiProduces('LobbyDTO')
     async quickStart(@Req() req: ExpressRequest): Promise<LobbyDTO> {
