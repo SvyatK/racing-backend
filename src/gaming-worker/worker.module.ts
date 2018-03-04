@@ -1,13 +1,15 @@
 import { MiddlewaresConsumer, Module } from '@nestjs/common';
 import { MainGateway } from './gateways/main.gateway';
-import { GameplayService } from '../app/services/gameplay.service';
+import { GameplayService } from './services/gameplay.service';
+import { GamingServerMainService } from './services/gaming-server-main.service';
 
 @Module({
     imports: [],
     controllers: [],
     components: [
         MainGateway,
-        GameplayService
+        GameplayService,
+        GamingServerMainService
     ],
     modules: []
 })

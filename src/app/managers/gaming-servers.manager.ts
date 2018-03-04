@@ -15,6 +15,10 @@ export class GamingServersManager {
         }
     }
 
+    public getRunningLobbyId(port: number): string {
+        return this.workersMap.get(port);
+    }
+
     public acquirePort(lobbyId: string): number {
         if ( this.emptyPortsSet.size === 0 ) {
             return -1;

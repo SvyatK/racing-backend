@@ -10,6 +10,7 @@ import * as path from 'path';
 import { GamingServersManager } from '../managers/gaming-servers.manager';
 import { ChildProcessMessage } from '../../gaming-worker/consts/child-process-message.const';
 import { AppUtils } from '../utils/app.utils';
+import { GameState } from '../business/interfaces/enum/game-state.enum';
 
 @Component()
 export class LobbyService {
@@ -19,9 +20,22 @@ export class LobbyService {
     }
 
     async quickStart(req: ExpressRequest): Promise<LobbyDTO> {
-        const openLobbies: LobbyDTO[] = await this.getLobbies();
-        if ( openLobbies.length > 0 ) {
-            return openLobbies[ Math.floor(Math.random() * openLobbies.length) ];
+        const openLobbies: ILobby[] = await this.lobbyDao.getOpenedLobbies();
+        let randomLobby: ILobby;
+        while (!randomLobby && openLobbies.length > 0) {
+            randomLobby = openLobbies[ Math.floor(Math.random() * openLobbies.length) ];
+            const lobbyPort: number = +randomLobby.serverUrl.substr(randomLobby.serverUrl.lastIndexOf(':') + 1);
+            const lobbyId: string = this.gamingServersManager.getRunningLobbyId(lobbyPort);
+            if ( !lobbyId || lobbyId != randomLobby.id ) {
+                console.log(`Found orphan lobby (port ${lobbyPort})! ${lobbyId ? ('Expected ' + randomLobby.id + '; found ' + lobbyId) : 'There is no such lobby in gaming server manager'}`);
+                randomLobby.state = GameState.Errored;
+                await randomLobby.save();
+                openLobbies.splice(openLobbies.indexOf(randomLobby), 1);
+                randomLobby = null;
+            }
+        }
+        if ( randomLobby ) {
+            return LobbyDTO.fromLobby(randomLobby);
         }
         return this.createLobby(req);
     }
@@ -44,6 +58,24 @@ export class LobbyService {
         let gamingProcess: ChildProcess;
         try {
             gamingProcess = await this.startGamingServer(lobbyModel, port, userModel);
+            gamingProcess.on('message', async (msg) => {
+                if ( msg === ChildProcessMessage.READY ) {
+                    lobbyModel.state = GameState.WaitingForPlayers;
+                    await lobbyModel.save();
+                } else if ( msg === ChildProcessMessage.CANCELLED ) {
+                    lobbyModel.state = GameState.Cancelled;
+                    await lobbyModel.save();
+                } else if ( msg === ChildProcessMessage.LOBBY_FULL ) {
+                    lobbyModel.state = GameState.LobbyFull;
+                    await lobbyModel.save();
+                } else if ( msg === ChildProcessMessage.GAME_STARTED ) {
+                    lobbyModel.state = GameState.Playing;
+                    await lobbyModel.save();
+                } else if ( msg === ChildProcessMessage.FINISHED ) {
+                    lobbyModel.state = GameState.Finished;
+                    await lobbyModel.save();
+                }
+            });
             gamingProcess.on('close', () => {
                 console.log(`Gaming server for lobby ${lobbyModel._id} closed`);
                 this.gamingServersManager.releasePort(lobbyModel._id);
@@ -66,7 +98,7 @@ export class LobbyService {
                 await AppUtils.doWithFailTimeout<void>(
                     new Promise<void>((resolve, reject) => {
                         forked.once('message', (msg) => {
-                            if ( msg === ChildProcessMessage.STARTED ) {
+                            if ( msg === ChildProcessMessage.SERVER_STARTED ) {
                                 resolve();
                             } else {
                                 forked.kill();

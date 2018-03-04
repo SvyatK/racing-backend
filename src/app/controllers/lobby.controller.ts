@@ -1,5 +1,5 @@
 import { Request as ExpressRequest } from 'express';
-import { Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiProduces, ApiResponse } from '@nestjs/swagger';
 import { LobbyService } from '../services/lobby.service';
 import { AuthenticationGuard } from '../middlewares/guards/authentication.guard';
@@ -34,7 +34,7 @@ export class LobbyController {
         return this.lobbyService.createLobby(req);
     }
 
-    @Post('getLobbies')
+    @Get('getLobbies')
     @ApiOperation({ title: 'Returns lobbies list' })
     @ApiResponse({
         status: 401,

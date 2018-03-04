@@ -1,12 +1,13 @@
 import { Component } from '@nestjs/common';
-import { OwnUserDataDTO } from '../dto/responses/own-user-data.dto';
+import { OwnUserDataDTO } from '../../app/dto/responses/own-user-data.dto';
+import { GamingServerMainService } from './gaming-server-main.service';
+import Environment from '../environment';
 
 @Component()
 export class GameplayService {
 
     // TODO types
     private items: any[] = [];
-    private roomCount: number = 0;
     private startCoordinates: { x: number, y: number, rot: number }[] = [ {
         x: 1056,
         y: -239,
@@ -18,12 +19,17 @@ export class GameplayService {
     }
     ];
 
-    constructor() {
+    constructor(private readonly gamingServerMainService: GamingServerMainService) {
     }
 
     async clientConnected(io: SocketIO.Server, socket: SocketIO.Socket): Promise<void> {
         const user: OwnUserDataDTO = socket.client.request.session.user;
-        console.log(`Client '${user.login}' connected via socket connection ${socket.client.id}`)
+        if ( user._id === Environment.OWNER_ID ) {
+            this.gamingServerMainService.onOwnerConnected();
+        }
+        console.log(`Client '${user.login}' connected via socket connection ${socket.client.id}`);
+        // this.gamingServerMainService.reportLobbyFull();
+        // TODO ^^
     }
 
     async clientDisconnected(io: SocketIO.Server, socket: SocketIO.Socket): Promise<void> {
@@ -34,7 +40,6 @@ export class GameplayService {
     // TODO data type
     async playerReadyToStart(io: SocketIO.Server, socket: SocketIO.Socket, data: any): Promise<void> {
         console.log(`${socket.id} ready to start`);
-        socket.join(this.roomCount.toString());
         const item = {
             id: data.id,
             x: this.startCoordinates[ this.items.length % 2 == 0 ? 0 : 1 ].x,
@@ -43,15 +48,14 @@ export class GameplayService {
             name: data.name
         };
         const container = {
-            roomId: this.roomCount,
             item: item,
             ready: false,
             finished: false
         };
         this.items.push(container);
-        if ( this.items.length % 2 == 0 ) {
+        if ( this.items.length === 2 ) {
+            this.gamingServerMainService.reportGameStarted();
             this.update(io, container);
-            this.roomCount++;
         }
     }
 
@@ -88,31 +92,15 @@ export class GameplayService {
 
     async playerFinished(io: SocketIO.Server, socket: SocketIO.Socket, data: any): Promise<void> {
         console.log(`${socket.id} finished`);
-        let currentRoom = this.getRoom(data.id);
-        io.sockets.in(currentRoom.toString())
-          .emit('raceFinished', data.id);
+        io.sockets.emit('raceFinished', data.id);
+        this.gamingServerMainService.reportGameFinished();
     }
 
     // TODO types
     private update(io: SocketIO.Server, itemData: any): void {
-        const itemsToSend = this.items
-                                .filter(currentContainer => currentContainer.roomId === itemData.roomId)
-                                .map(currentContainer => currentContainer.item);
+        const itemsToSend = this.items.map(currentContainer => currentContainer.item);
         if ( itemsToSend.length >= 2 ) {
-            io.sockets.in(itemData.roomId.toString())
-              .emit('stepComplete', itemsToSend);
-        }
-    }
-
-    private getRoom(id: string): any {
-        for (let i = 0; i < this.items.length; i++) {
-            let currentContainer = this.items[ i ];
-            if ( currentContainer.item.id === id ) {
-                console.log('###' + JSON.stringify(currentContainer));
-                return currentContainer.roomId;
-            }
+            io.sockets.emit('stepComplete', itemsToSend);
         }
     }
 }
-
-

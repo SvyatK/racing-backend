@@ -7,7 +7,7 @@ export class OwnUserDataDTO {
 
     @ApiModelProperty({ type: String })
     @IsString()
-    readonly _id: number;
+    readonly _id: string;
 
     @ApiModelProperty({ type: String })
     @IsString()
