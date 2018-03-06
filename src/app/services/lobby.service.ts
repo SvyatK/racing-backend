@@ -53,7 +53,8 @@ export class LobbyService {
             await this.lobbyDao.delete(lobbyModel);
             throw new HttpException('Server overloaded. Try again later', HttpStatus.NOT_ACCEPTABLE);
         }
-        lobbyModel.serverUrl = `${process.env.SERVER_URL || 'http://localhost'}:${port}`;
+        // TODO fix
+        lobbyModel.serverUrl = `http://18.222.68.88:${port}`;//`${process.env.SERVER_URL || 'http://localhost'}:${port}`;
         await lobbyModel.save();
         let gamingProcess: ChildProcess;
         try {
