@@ -1,13 +1,17 @@
 import { Component } from '@nestjs/common';
-import { OwnUserDataDTO } from '../../app/dto/responses/own-user-data.dto';
 import { GamingServerMainService } from './gaming-server-main.service';
 import Environment from '../environment';
+import PlayerModel from '../models/player.model';
+import { GameState } from '../../app/business/interfaces/enum/game-state.enum';
+import { UserDataDTO } from '../../app/dto/responses/user-data.dto';
+import PlayerDataDTO from '../dto/player-data.dto';
 
 @Component()
 export class GameplayService {
 
-    // TODO types
-    private items: any[] = [];
+    private players: PlayerModel[] = [];
+
+    // TODO get from DAE
     private startCoordinates: { x: number, y: number, rot: number }[] = [ {
         x: 1056,
         y: -239,
@@ -23,70 +27,81 @@ export class GameplayService {
     }
 
     async clientConnected(io: SocketIO.Server, socket: SocketIO.Socket): Promise<void> {
-        const user: OwnUserDataDTO = socket.client.request.session.user;
+        if ( this.players.length === 2 ) {
+            socket.disconnect(true);
+        }
+        const user: UserDataDTO = UserDataDTO.fromOwnUserDataDTO(socket.client.request.session.user);
+        this.players.push(new PlayerModel(socket, user, {}));
+        if ( this.players.length === 2 ) {
+            this.gamingServerMainService.reportLobbyFull();
+        }
         if ( user._id === Environment.OWNER_ID ) {
             this.gamingServerMainService.onOwnerConnected();
         }
         console.log(`Client '${user.login}' connected via socket connection ${socket.client.id}`);
-        // this.gamingServerMainService.reportLobbyFull();
-        // TODO ^^
+        socket.emit(
+            'addedToLobby',
+            this.players.map(
+                (player: PlayerModel): PlayerDataDTO => PlayerDataDTO.fromPlayerModel(player)
+            )
+        );
     }
 
     async clientDisconnected(io: SocketIO.Server, socket: SocketIO.Socket): Promise<void> {
-        const user: OwnUserDataDTO = socket.client.request.session.user;
-        console.log(`Client '${user.login}' disconnected (socket connection ${socket.client.id})`);
+        const leaver: PlayerModel = this.getPlayerBySocket(socket);
+        console.log(`Client '${leaver.userModel.login}' disconnected (socket connection ${socket.client.id})`);
+        this.players.splice(this.players.indexOf(leaver), 1);
+        if ( this.players.length === 0 ) {
+            this.gamingServerMainService.reportRaceCancelled();
+        }
+        if ( this.players.length === 1 && this.gamingServerMainService.currentState === GameState.Playing ) {
+            console.log(`${this.players[ 0 ].connection.client.id} finished (no users left)`);
+            io.sockets.emit('raceFinished', this.players[ 0 ].data.item.id);
+            this.gamingServerMainService.reportGameFinished();
+        }
     }
 
     // TODO data type
     async playerReadyToStart(io: SocketIO.Server, socket: SocketIO.Socket, data: any): Promise<void> {
         console.log(`${socket.id} ready to start`);
-        const item = {
-            id: data.id,
-            x: this.startCoordinates[ this.items.length % 2 == 0 ? 0 : 1 ].x,
-            y: this.startCoordinates[ this.items.length % 2 ? 0 : 1 ].y,
-            rotation: this.startCoordinates[ this.items.length % 2 ? 0 : 1 ].rot,
-            name: data.name
-        };
+        const positionIndex: number = this.countReadyToStartPlayers();
         const container = {
-            item: item,
+            item: {
+                id: data.id,
+                x: this.startCoordinates[ positionIndex ].x,
+                y: this.startCoordinates[ positionIndex ].y,
+                rotation: this.startCoordinates[ positionIndex ].rot,
+                name: data.name
+            },
             ready: false,
             finished: false
         };
-        this.items.push(container);
-        if ( this.items.length === 2 ) {
+        this.getPlayerBySocket(socket).data = container;
+        if ( this.countReadyToStartPlayers() === 2 ) {
             this.gamingServerMainService.reportGameStarted();
-            this.update(io, container);
+            this.update(io);
         }
     }
 
     async nextStep(io: SocketIO.Server, socket: SocketIO.Socket, data: any): Promise<void> {
-        let clientsReady = 0;
         let currentContainer;
         //replace item data
-        for (let i = 0; i < this.items.length; i++) {
-            let container = this.items[ i ];
+        for (let i = 0; i < this.players.length; i++) {
+            let container = this.players[ i ].data;
             if ( data.id == container.item.id ) {
-                this.items[ i ].item = data;
-                this.items[ i ].ready = true;
+                this.players[ i ].data.item = data;
+                this.players[ i ].data.ready = true;
                 currentContainer = container;
             }
         }
         //get ready items
-        for (let j = 0; j < this.items.length; j++) {
-            let readyContainer = this.items[ j ];
-            if ( readyContainer.roomId == currentContainer.roomId && readyContainer.ready ) {
-                clientsReady++;
-            }
-        }
+        let clientsReady = this.countReadyPlayers();
         if ( clientsReady >= 2 ) {
             //setting ready false
-            for (let k = 0; k < this.items.length; k++) {
-                let readyContainer = this.items[ k ];
-                if ( readyContainer.roomId == currentContainer.roomId ) {
-                    readyContainer.ready = false;
-                }
+            for (let k = 0; k < this.players.length; k++) {
+                this.players[ k ].data.ready = false;
             }
-            this.update(io, currentContainer);
+            this.update(io);
         }
     }
 
@@ -97,10 +112,29 @@ export class GameplayService {
     }
 
     // TODO types
-    private update(io: SocketIO.Server, itemData: any): void {
-        const itemsToSend = this.items.map(currentContainer => currentContainer.item);
+    private update(io: SocketIO.Server): void {
+        const itemsToSend = this.players
+                                .map((player: PlayerModel): any => player.data.item)
+                                .filter(item => !!item);
         if ( itemsToSend.length >= 2 ) {
             io.sockets.emit('stepComplete', itemsToSend);
         }
+    }
+
+    private getPlayerBySocket(socket: SocketIO.Socket): PlayerModel {
+        return this.players.find((player: PlayerModel): boolean => {
+            return (player.connection.client.id === socket.client.id);
+        });
+    }
+
+    private countReadyToStartPlayers(): number {
+        return this.players.filter(
+            (player: PlayerModel): boolean => (!!player.data && Object.keys(player.data).length > 0)
+        ).length;
+    }
+
+    // TODO rename. means how many players made a move
+    private countReadyPlayers(): number {
+        return this.players.filter((player: PlayerModel): boolean => (!!player.data && player.data.ready)).length;
     }
 }
