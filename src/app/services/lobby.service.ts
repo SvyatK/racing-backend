@@ -54,7 +54,7 @@ export class LobbyService {
             throw new HttpException('Server overloaded. Try again later', HttpStatus.NOT_ACCEPTABLE);
         }
         // TODO fix
-        lobbyModel.serverUrl = `http://18.222.68.88:${port}`;//`${process.env.SERVER_URL || 'http://localhost'}:${port}`;
+        lobbyModel.serverUrl = `https://racing-demo-dev.pp.ua:${port}`;//`${process.env.SERVER_URL || 'http://localhost'}:${port}`;
         await lobbyModel.save();
         let gamingProcess: ChildProcess;
         try {
