@@ -8,9 +8,9 @@ import * as fs from 'fs';
 
 async function bootstrap() {
     const sslOptions = {
-        key: fs.readFileSync('/etc/letsencrypt/live/example.com/privkey.pem'),
-        cert: fs.readFileSync('/etc/letsencrypt/live/example.com/cert.pem'),
-        ca: fs.readFileSync('/etc/letsencrypt/live/example.com/chain.pem')
+        key: fs.readFileSync('/etc/letsencrypt/live/racing-demo-dev.pp.ua/privkey.pem'),
+        cert: fs.readFileSync('/etc/letsencrypt/live/racing-demo-dev.pp.ua/cert.pem'),
+        ca: fs.readFileSync('/etc/letsencrypt/live/racing-demo-dev.pp.ua/chain.pem')
     };
     const expressInstance: express.Express = express();
     expressInstance.use(express.static(path.join(__dirname, '../www')));
