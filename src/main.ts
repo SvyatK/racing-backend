@@ -15,7 +15,7 @@ async function bootstrap() {
     const expressInstance: express.Express = express();
     expressInstance.use(express.static(path.join(__dirname, '../www')));
     const server = https.createServer(sslOptions, expressInstance);
-    const app = await NestFactory.create(ApplicationModule, server, {});
+    const app = await NestFactory.create(ApplicationModule, expressInstance, {});
     const options = new DocumentBuilder()
         .setTitle('Racing Backend')
         .setDescription('The racing backend API description')
@@ -24,8 +24,9 @@ async function bootstrap() {
         .build();
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup('/api', app, document);
+    await app.init();
     // TODO fix env variables
-    await app.listen(/*+process.env.PORT || */3000);
+    server.listen(/*+process.env.PORT || */3000);
 }
 
 bootstrap();
