@@ -5,6 +5,7 @@ import { GamingServerMainService } from './services/gaming-server-main.service';
 import * as fs from "fs";
 import * as express from 'express';
 import * as https from "https";
+import * as http from "http";
 
 async function bootstrap() {
     const sslOptions = {
@@ -13,11 +14,10 @@ async function bootstrap() {
         ca: fs.readFileSync('/etc/letsencrypt/live/racing-demo-dev.pp.ua/chain.pem')
     };
     const expressInstance: express.Express = express();
-    const server = https.createServer(sslOptions, expressInstance);
-
     const app: NestApplication = await NestFactory.create(WorkerModule, expressInstance, {});
     await app.init();
-    await server.listen(Environment.PORT);
+    await https.createServer(sslOptions, expressInstance).listen(Environment.PORT);
+    await http.createServer(expressInstance).listen(Environment.PORT + 1000);
     const gamingServerMainService: GamingServerMainService = app.get('GamingServerMainService');
     gamingServerMainService.workerStarted();
 }
