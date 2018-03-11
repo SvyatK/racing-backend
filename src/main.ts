@@ -8,14 +8,14 @@ import * as fs from 'fs';
 import * as http from 'http';
 
 async function bootstrap() {
-    const sslOptions = {
+    const httpsOptions = {
         key: fs.readFileSync('/etc/letsencrypt/live/racing-demo-dev.pp.ua/privkey.pem'),
         cert: fs.readFileSync('/etc/letsencrypt/live/racing-demo-dev.pp.ua/cert.pem'),
         ca: fs.readFileSync('/etc/letsencrypt/live/racing-demo-dev.pp.ua/chain.pem')
     };
     const expressInstance: express.Express = express();
     expressInstance.use(express.static(path.join(__dirname, '../www')));
-    const app = await NestFactory.create(ApplicationModule, expressInstance, {});
+    const app = await NestFactory.create(ApplicationModule, expressInstance, { httpsOptions });
     const options = new DocumentBuilder()
         .setTitle('Racing Backend')
         .setDescription('The racing backend API description')
@@ -27,7 +27,7 @@ async function bootstrap() {
     app.init();
     http.createServer(expressInstance).listen(8080);
     // TODO fix env variables
-    https.createServer(sslOptions, expressInstance).listen(/*+process.env.PORT || */3000);
+    https.createServer(httpsOptions, expressInstance).listen(/*+process.env.PORT || */3000);
 }
 
 bootstrap();
