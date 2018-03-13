@@ -1,4 +1,4 @@
-const env = require('./env.json');
+const env = require('../../../env.json');
 
 export const APP_CONFIG: {
     env: string,
