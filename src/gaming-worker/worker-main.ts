@@ -13,7 +13,11 @@ async function bootstrap() {
     };
     const expressInstance: express.Express = express();
 
-    const app: NestApplication = await NestFactory.create(WorkerModule, expressInstance, { httpsOptions });
+    const app: NestApplication = await NestFactory.create(
+        WorkerModule,
+        expressInstance,
+        { httpsOptions }
+    );
     await app.listen(Environment.PORT);
 
     const gamingServerMainService: GamingServerMainService = app.get('GamingServerMainService');
