@@ -1,10 +1,10 @@
 import { Component } from '@nestjs/common';
 import { GamingServerMainService } from './gaming-server-main.service';
-import Environment from '../environment';
 import PlayerModel from '../models/player.model';
 import { GameState } from '../../app/business/interfaces/enum/game-state.enum';
 import { UserDataDTO } from '../../app/dto/responses/user-data.dto';
 import PlayerDataDTO from '../dto/player-data.dto';
+import GamingWorkerEnvironment from '../gaming-worker-environment';
 
 @Component()
 export class GameplayService {
@@ -35,7 +35,7 @@ export class GameplayService {
         if ( this.players.length === 2 ) {
             this.gamingServerMainService.reportLobbyFull();
         }
-        if ( user._id === Environment.OWNER_ID ) {
+        if ( user._id === GamingWorkerEnvironment.OWNER_ID ) {
             this.gamingServerMainService.onOwnerConnected();
         }
         console.log(`Client '${user.login}' connected via socket connection ${socket.client.id}`);
