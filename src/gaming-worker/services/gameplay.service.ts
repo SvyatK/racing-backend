@@ -9,6 +9,8 @@ import GamingWorkerEnvironment from '../gaming-worker-environment';
 @Component()
 export class GameplayService {
 
+    public static PLAYERS_COUNT: number = 1;
+
     private players: PlayerModel[] = [];
 
     // TODO get from DAE
@@ -27,16 +29,16 @@ export class GameplayService {
     }
 
     async clientConnected(io: SocketIO.Server, socket: SocketIO.Socket): Promise<void> {
-        if ( this.players.length === 2 ) {
+        if ( this.players.length === GameplayService.PLAYERS_COUNT ) {
             socket.disconnect(true);
         }
         const user: UserDataDTO = UserDataDTO.fromOwnUserDataDTO(socket.client.request.session.user);
         this.players.push(new PlayerModel(socket, user, {}));
-        if ( this.players.length === 2 ) {
-            this.gamingServerMainService.reportLobbyFull();
-        }
         if ( user._id === GamingWorkerEnvironment.OWNER_ID ) {
             this.gamingServerMainService.onOwnerConnected();
+        }
+        if ( this.players.length === GameplayService.PLAYERS_COUNT ) {
+            this.gamingServerMainService.reportLobbyFull();
         }
         console.log(`Client '${user.login}' connected via socket connection ${socket.client.id}`);
         socket.emit(
@@ -77,7 +79,7 @@ export class GameplayService {
             finished: false
         };
         this.getPlayerBySocket(socket).data = container;
-        if ( this.countReadyToStartPlayers() === 2 ) {
+        if ( this.countReadyToStartPlayers() === GameplayService.PLAYERS_COUNT ) {
             this.gamingServerMainService.reportGameStarted();
             this.update(io);
         }
@@ -96,7 +98,7 @@ export class GameplayService {
         }
         //get ready items
         let clientsReady = this.countReadyPlayers();
-        if ( clientsReady >= 2 ) {
+        if ( clientsReady >= GameplayService.PLAYERS_COUNT ) {
             //setting ready false
             for (let k = 0; k < this.players.length; k++) {
                 this.players[ k ].data.ready = false;
@@ -116,7 +118,7 @@ export class GameplayService {
         const itemsToSend = this.players
                                 .map((player: PlayerModel): any => player.data.item)
                                 .filter(item => !!item);
-        if ( itemsToSend.length >= 2 ) {
+        if ( itemsToSend.length >= GameplayService.PLAYERS_COUNT ) {
             io.sockets.emit('stepComplete', itemsToSend);
         }
     }
