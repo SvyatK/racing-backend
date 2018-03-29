@@ -28505,6 +28505,10 @@ finish-screen {
   display: none;
 }
 
+.click-through {
+  pointer-events: none;
+}
+
 page-login {
   background-color: #ffffff;
 }
