@@ -9,7 +9,7 @@ import GamingWorkerEnvironment from '../gaming-worker-environment';
 @Component()
 export class GameplayService {
 
-    public static PLAYERS_COUNT: number = 1;
+    public static PLAYERS_COUNT: number = 2;
 
     private players: PlayerModel[] = [];
 
