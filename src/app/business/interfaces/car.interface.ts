@@ -4,8 +4,12 @@ export interface ICar extends Document {
 
     name: string;
     image: string;
-    // TODO camelcase convention
-    max_acceleration: number;
-    max_deceleration: number;
+    // TODO outdated, remove
     steering: number;
+    dragConstant: number;
+    wheelFrictionConstant: number;
+    engineForce: number;
+    brakingForce: number;
+    mass: number;
+
 }

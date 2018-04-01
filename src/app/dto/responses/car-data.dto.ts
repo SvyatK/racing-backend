@@ -15,18 +15,30 @@ export class CarDataDTO {
 
     @ApiModelProperty({ type: Number })
     @IsNumber()
-    readonly max_acceleration: number;
-
-    @ApiModelProperty({ type: Number })
-    @IsNumber()
-    readonly max_deceleration: number;
-
-    @ApiModelProperty({ type: Number })
-    @IsNumber()
     readonly steering: number;
 
+    @ApiModelProperty({ type: Number })
+    @IsNumber()
+    readonly dragConstant: number;
+
+    @ApiModelProperty({ type: Number })
+    @IsNumber()
+    readonly wheelFrictionConstant: number;
+
+    @ApiModelProperty({ type: Number })
+    @IsNumber()
+    readonly engineForce: number;
+
+    @ApiModelProperty({ type: Number })
+    @IsNumber()
+    readonly brakingForce: number;
+
+    @ApiModelProperty({ type: Number })
+    @IsNumber()
+    readonly mass: number;
+
     static fromCar(car: ICar): CarDataDTO {
-        return _.pick(car, [ 'name', 'image', 'max_acceleration', 'max_deceleration', 'steering' ]);
+        return _.pick(car, [ 'name', 'image', 'steering', 'dragConstant', 'wheelFrictionConstant', 'engineForce', 'brakingForce', 'mass' ]);
     }
 
 }

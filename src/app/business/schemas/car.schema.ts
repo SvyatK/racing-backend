@@ -10,9 +10,13 @@ export const CarSchema = new mongoose.Schema({
         index: true
     },
     image: { type: String },
-    max_acceleration: { type: Number },
-    max_deceleration: { type: Number },
-    steering: { type: Number }
+    // TODO outdated, remove
+    steering: { type: Number },
+    dragConstant: { type: Number },
+    wheelFrictionConstant: { type: Number },
+    engineForce: { type: Number },
+    brakingForce: { type: Number },
+    mass: { type: Number }
 });
 
 CarSchema.pre('save', function (next) {
