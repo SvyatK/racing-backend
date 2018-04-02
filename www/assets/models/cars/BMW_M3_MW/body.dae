@@ -6,8 +6,8 @@
       <authoring_tool>OpenCOLLADA for 3ds Max;  Version: 1.6;  Revision: 62</authoring_tool>
       <source_data>file:///E:/Development/projects/AG/racing-client/asset-sources/cars/BMW%20M3%20GTR.max</source_data>
     </contributor>
-    <created>2018-02-20T01:49:03</created>
-    <modified>2018-02-20T01:49:03</modified>
+    <created>2018-04-01T02:43:44</created>
+    <modified>2018-04-01T02:43:44</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -2082,9 +2082,9 @@
         <instance_light url="#EnvironmentAmbientLight"/>
       </node>
       <node id="node-body001" name="body001">
-        <matrix>-6.3559e-9 -0.145406 0 0 0.145406 -6.3559e-9 0 0 0 0 0.145406 0 0 0 0 1</matrix>
+        <matrix>1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1</matrix>
         <node>
-          <matrix>1 0 0 -21.97343 0 1 0 -3.69674e-6 0 0 1 12.81649 0 0 0 1</matrix>
+          <matrix>0 -0.007997329 0 4.34462e-8 0.007997329 0 0 -0.2307522 0 0 0.007997329 0.1024977 0 0 0 1</matrix>
           <instance_geometry url="#geom-body001">
             <bind_material>
               <technique_common>
@@ -2105,9 +2105,9 @@
         </extra>
       </node>
       <node id="node-bottom" name="bottom">
-        <matrix>-6.3559e-9 -0.145406 0 0 0.145406 -6.3559e-9 0 0 0 0 0.145406 0 0 0 0 1</matrix>
+        <matrix>1 0 0 2.40515e-9 0 1 0 0 0 0 1 -2.40515e-9 0 0 0 1</matrix>
         <node>
-          <matrix>1 0 0 -21.97343 0 1 0 -3.69674e-6 0 0 1 12.81649 0 0 0 1</matrix>
+          <matrix>0 -0.007997329 0 4.57611e-8 0.007997329 0 0 -0.2307522 0 0 0.007997329 0.1024977 0 0 0 1</matrix>
           <instance_geometry url="#geom-bottom">
             <bind_material>
               <technique_common>
@@ -2129,9 +2129,9 @@
         </extra>
       </node>
       <node id="node-misc" name="misc">
-        <matrix>-6.3559e-9 -0.145406 0 0 0.145406 -6.3559e-9 0 0 0 0 0.145406 0 0 0 0 1</matrix>
+        <matrix>1 0 0 2.40515e-9 0 1 0 0 0 0 1 -2.40515e-9 0 0 0 1</matrix>
         <node>
-          <matrix>1 0 0 -21.97343 0 1 0 -3.69674e-6 0 0 1 12.81649 0 0 0 1</matrix>
+          <matrix>0 -0.007997329 0 3.72454e-8 0.007997329 0 0 -0.2307521 0 0 0.007997329 0.1024977 0 0 0 1</matrix>
           <instance_geometry url="#geom-misc">
             <bind_material>
               <technique_common>
@@ -2153,9 +2153,9 @@
         </extra>
       </node>
       <node id="node-black" name="black">
-        <matrix>-6.3559e-9 -0.145406 0 0 0.145406 -6.3559e-9 0 0 0 0 0.145406 0 0 0 0 1</matrix>
+        <matrix>1 0 0 2.40515e-9 0 1 0 0 0 0 1 -2.40515e-9 0 0 0 1</matrix>
         <node>
-          <matrix>1 0 0 -21.97343 0 1 0 -3.69674e-6 0 0 1 12.81649 0 0 0 1</matrix>
+          <matrix>0 -0.007997329 0 3.72454e-8 0.007997329 0 0 -0.2307521 0 0 0.007997329 0.1024977 0 0 0 1</matrix>
           <instance_geometry url="#geom-black">
             <bind_material>
               <technique_common>
@@ -2174,9 +2174,9 @@
         </extra>
       </node>
       <node id="node-Interior" name="Interior">
-        <matrix>-6.3559e-9 -0.145406 0 0 0.145406 -6.3559e-9 0 0 0 0 0.145406 0 0 0 0 1</matrix>
+        <matrix>1 0 0 2.40515e-9 0 1 0 0 0 0 1 -2.40515e-9 0 0 0 1</matrix>
         <node>
-          <matrix>1 0 0 -21.97343 0 1 0 -3.69674e-6 0 0 1 12.81649 0 0 0 1</matrix>
+          <matrix>0 -0.007997329 0 3.72454e-8 0.007997329 0 0 -0.2307521 0 0 0.007997329 0.1024977 0 0 0 1</matrix>
           <instance_geometry url="#geom-Interior">
             <bind_material>
               <technique_common>
@@ -2198,9 +2198,9 @@
         </extra>
       </node>
       <node id="node-glass" name="glass">
-        <matrix>-6.3559e-9 -0.145406 0 0 0.145406 -6.3559e-9 0 0 0 0 0.145406 0 0 0 0 1</matrix>
+        <matrix>1 0 0 2.40515e-9 0 1 0 0 0 0 1 -2.40515e-9 0 0 0 1</matrix>
         <node>
-          <matrix>1 0 0 -21.97343 0 1 0 -3.69674e-6 0 0 1 12.81649 0 0 0 1</matrix>
+          <matrix>0 -0.007997329 0 3.72454e-8 0.007997329 0 0 -0.2307521 0 0 0.007997329 0.1024977 0 0 0 1</matrix>
           <instance_geometry url="#geom-glass">
             <bind_material>
               <technique_common>
@@ -2219,9 +2219,9 @@
         </extra>
       </node>
       <node id="node-badging" name="badging">
-        <matrix>-6.3559e-9 -0.145406 0 0 0.145406 -6.3559e-9 0 0 0 0 0.145406 0 0 0 0 1</matrix>
+        <matrix>1 0 0 2.40515e-9 0 1 0 0 0 0 1 -2.40515e-9 0 0 0 1</matrix>
         <node>
-          <matrix>1 0 0 -21.97343 0 1 0 -3.69674e-6 0 0 1 12.81649 0 0 0 1</matrix>
+          <matrix>0 -0.007997329 0 4.57611e-8 0.007997329 0 0 -0.2307522 0 0 0.007997329 0.1024977 0 0 0 1</matrix>
           <instance_geometry url="#geom-badging">
             <bind_material>
               <technique_common>
@@ -2243,9 +2243,9 @@
         </extra>
       </node>
       <node id="node-chrome" name="chrome">
-        <matrix>-6.3559e-9 -0.145406 0 0 0.145406 -6.3559e-9 0 0 0 0 0.145406 0 0 0 0 1</matrix>
+        <matrix>1 0 0 2.40515e-9 0 1 0 0 0 0 1 -2.40515e-9 0 0 0 1</matrix>
         <node>
-          <matrix>1 0 0 -21.97343 0 1 0 -3.69674e-6 0 0 1 12.81649 0 0 0 1</matrix>
+          <matrix>0 -0.007997329 0 3.72454e-8 0.007997329 0 0 -0.2307521 0 0 0.007997329 0.1024977 0 0 0 1</matrix>
           <instance_geometry url="#geom-chrome">
             <bind_material>
               <technique_common>
@@ -2264,9 +2264,9 @@
         </extra>
       </node>
       <node id="node-tires" name="tires">
-        <matrix>-6.3559e-9 -0.145406 0 0 0.145406 -6.3559e-9 0 0 0 0 0.145406 0 0 0 0 1</matrix>
+        <matrix>1 0 0 2.40515e-9 0 1 0 0 0 0 1 -2.40515e-9 0 0 0 1</matrix>
         <node>
-          <matrix>1 0 0 -21.97343 0 1 0 -3.69674e-6 0 0 1 12.81649 0 0 0 1</matrix>
+          <matrix>0 -0.007997329 0 3.72454e-8 0.007997329 0 0 -0.2307521 0 0 0.007997329 0.1024977 0 0 0 1</matrix>
           <instance_geometry url="#geom-tires">
             <bind_material>
               <technique_common>
@@ -2287,9 +2287,9 @@
         </extra>
       </node>
       <node id="node-tires-chrome" name="tires-chrome">
-        <matrix>-6.3559e-9 -0.145406 0 0 0.145406 -6.3559e-9 0 0 0 0 0.145406 0 0 0 0 1</matrix>
+        <matrix>1 0 0 2.40515e-9 0 1 0 0 0 0 1 -2.40515e-9 0 0 0 1</matrix>
         <node>
-          <matrix>1 0 0 -21.97343 0 1 0 -3.69674e-6 0 0 1 12.81649 0 0 0 1</matrix>
+          <matrix>0 -0.007997329 0 3.72454e-8 0.007997329 0 0 -0.2307521 0 0 0.007997329 0.1024977 0 0 0 1</matrix>
           <instance_geometry url="#geom-tires-chrome">
             <bind_material>
               <technique_common>
@@ -2310,9 +2310,9 @@
         </extra>
       </node>
       <node id="node-brake-disks" name="brake-disks">
-        <matrix>-6.3559e-9 -0.145406 0 0 0.145406 -6.3559e-9 0 0 0 0 0.145406 0 0 0 0 1</matrix>
+        <matrix>1 0 0 2.40515e-9 0 1 0 0 0 0 1 -2.40515e-9 0 0 0 1</matrix>
         <node>
-          <matrix>1 0 0 -21.97343 0 1 0 -3.69674e-6 0 0 1 12.81649 0 0 0 1</matrix>
+          <matrix>0 -0.007997329 0 4.57611e-8 0.007997329 0 0 -0.2307522 0 0 0.007997329 0.1024977 0 0 0 1</matrix>
           <instance_geometry url="#geom-brake-disks">
             <bind_material>
               <technique_common>
@@ -2333,9 +2333,9 @@
         </extra>
       </node>
       <node id="node-tread" name="tread">
-        <matrix>-6.3559e-9 -0.145406 0 0 0.145406 -6.3559e-9 0 0 0 0 0.145406 0 0 0 0 1</matrix>
+        <matrix>1 0 0 2.40515e-9 0 1 0 0 0 0 1 -2.40515e-9 0 0 0 1</matrix>
         <node>
-          <matrix>1 0 0 -21.97343 0 1 0 -3.69674e-6 0 0 1 12.81649 0 0 0 1</matrix>
+          <matrix>0 -0.007997329 0 3.72454e-8 0.007997329 0 0 -0.2307521 0 0 0.007997329 0.1024977 0 0 0 1</matrix>
           <instance_geometry url="#geom-tread">
             <bind_material>
               <technique_common>
@@ -2357,9 +2357,9 @@
         </extra>
       </node>
       <node id="node-white" name="white">
-        <matrix>-6.3559e-9 -0.145406 0 0 0.145406 -6.3559e-9 0 0 0 0 0.145406 0 0 0 0 1</matrix>
+        <matrix>1 0 0 2.40515e-9 0 1 0 0 0 0 1 -2.40515e-9 0 0 0 1</matrix>
         <node>
-          <matrix>1 0 0 -21.97343 0 1 0 -3.69674e-6 0 0 1 12.81649 0 0 0 1</matrix>
+          <matrix>0 -0.007997329 0 3.72454e-8 0.007997329 0 0 -0.2307521 0 0 0.007997329 0.1024977 0 0 0 1</matrix>
           <instance_geometry url="#geom-white">
             <bind_material>
               <technique_common>
@@ -2378,9 +2378,9 @@
         </extra>
       </node>
       <node id="node-blue" name="blue">
-        <matrix>-6.3559e-9 -0.145406 0 0 0.145406 -6.3559e-9 0 0 0 0 0.145406 0 0 0 0 1</matrix>
+        <matrix>1 0 0 2.40515e-9 0 1 0 0 0 0 1 -2.40515e-9 0 0 0 1</matrix>
         <node>
-          <matrix>1 0 0 -21.97343 0 1 0 -3.69674e-6 0 0 1 12.81649 0 0 0 1</matrix>
+          <matrix>0 -0.007997329 0 4.57611e-8 0.007997329 0 0 -0.2307522 0 0 0.007997329 0.1024977 0 0 0 1</matrix>
           <instance_geometry url="#geom-blue">
             <bind_material>
               <technique_common>
@@ -2399,9 +2399,9 @@
         </extra>
       </node>
       <node id="node-licenses" name="licenses">
-        <matrix>-6.3559e-9 -0.145406 0 0 0.145406 -6.3559e-9 0 0 0 0 0.145406 0 0 0 0 1</matrix>
+        <matrix>1 0 0 2.40515e-9 0 1 0 0 0 0 1 -2.40515e-9 0 0 0 1</matrix>
         <node>
-          <matrix>1 0 0 -21.97343 0 1 0 -3.69674e-6 0 0 1 12.81649 0 0 0 1</matrix>
+          <matrix>0 -0.007997329 0 3.72454e-8 0.007997329 0 0 -0.2307521 0 0 0.007997329 0.1024977 0 0 0 1</matrix>
           <instance_geometry url="#geom-licenses">
             <bind_material>
               <technique_common>
@@ -2422,9 +2422,9 @@
         </extra>
       </node>
       <node id="node-backlights" name="backlights">
-        <matrix>-6.3559e-9 -0.145406 0 0 0.145406 -6.3559e-9 0 0 0 0 0.145406 0 0 0 0 1</matrix>
+        <matrix>1 0 0 2.40515e-9 0 1 0 0 0 0 1 -2.40515e-9 0 0 0 1</matrix>
         <node>
-          <matrix>1 0 0 -21.97343 0 1 0 -3.69674e-6 0 0 1 12.81649 0 0 0 1</matrix>
+          <matrix>0 -0.007997329 0 3.72454e-8 0.007997329 0 0 -0.2307521 0 0 0.007997329 0.1024977 0 0 0 1</matrix>
           <instance_geometry url="#geom-backlights">
             <bind_material>
               <technique_common>
@@ -2445,9 +2445,9 @@
         </extra>
       </node>
       <node id="node-head" name="head">
-        <matrix>-6.3559e-9 -0.145406 0 0 0.145406 -6.3559e-9 0 0 0 0 0.145406 0 0 0 0 1</matrix>
+        <matrix>1 0 0 2.40515e-9 0 1 0 0 0 0 1 -2.40515e-9 0 0 0 1</matrix>
         <node>
-          <matrix>1 0 0 -21.97343 0 1 0 -3.69674e-6 0 0 1 12.81649 0 0 0 1</matrix>
+          <matrix>0 -0.007997329 0 3.72454e-8 0.007997329 0 0 -0.2307521 0 0 0.007997329 0.1024977 0 0 0 1</matrix>
           <instance_geometry url="#geom-head">
             <bind_material>
               <technique_common>
@@ -2468,9 +2468,9 @@
         </extra>
       </node>
       <node id="node-head-glass" name="head-glass">
-        <matrix>-6.3559e-9 -0.145406 0 0 0.145406 -6.3559e-9 0 0 0 0 0.145406 0 0 0 0 1</matrix>
+        <matrix>1 0 0 2.40515e-9 0 1 0 0 0 0 1 -2.40515e-9 0 0 0 1</matrix>
         <node>
-          <matrix>1 0 0 -21.97343 0 1 0 -3.69674e-6 0 0 1 12.81649 0 0 0 1</matrix>
+          <matrix>0 -0.007997329 0 3.72454e-8 0.007997329 0 0 -0.2307521 0 0 0.007997329 0.1024977 0 0 0 1</matrix>
           <instance_geometry url="#geom-head-glass">
             <bind_material>
               <technique_common>
