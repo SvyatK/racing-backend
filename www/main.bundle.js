@@ -1057,26 +1057,26 @@ var ModelLoaderService = ModelLoaderService_1 = (function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
-                return [2 /*return*/, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
-                        var _this = this;
-                        return __generator(this, function (_a) {
-                            //timeout for not freezing UI, there are many sync calculations
-                            setTimeout(function () { return __awaiter(_this, void 0, void 0, function () {
-                                return __generator(this, function (_a) {
-                                    switch (_a.label) {
-                                        case 0: return [4 /*yield*/, this.waitForAllContentLoaded()];
-                                        case 1:
-                                            _a.sent();
-                                            new __WEBPACK_IMPORTED_MODULE_3_three_collada_loader___default.a().load("" + ModelLoaderService_1.PREFIX + path + filename + ".dae", function (colladaScene) {
+                return [2 /*return*/, new Promise(function (resolve, reject) {
+                        //timeout for not freezing UI, there are many sync calculations
+                        setTimeout(function () { return __awaiter(_this, void 0, void 0, function () {
+                            var _this = this;
+                            return __generator(this, function (_a) {
+                                new __WEBPACK_IMPORTED_MODULE_3_three_collada_loader___default.a().load("" + ModelLoaderService_1.PREFIX + path + filename + ".dae", function (colladaScene) { return __awaiter(_this, void 0, void 0, function () {
+                                    return __generator(this, function (_a) {
+                                        switch (_a.label) {
+                                            case 0: return [4 /*yield*/, this.waitForAllContentLoaded()];
+                                            case 1:
+                                                _a.sent();
                                                 resolve(colladaScene);
-                                            });
-                                            return [2 /*return*/];
-                                    }
-                                });
-                            }); }, 15);
-                            return [2 /*return*/];
-                        });
-                    }); })];
+                                                return [2 /*return*/];
+                                        }
+                                    });
+                                }); });
+                                return [2 /*return*/];
+                            });
+                        }); }, 15);
+                    })];
             });
         });
     };
