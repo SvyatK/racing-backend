@@ -81,6 +81,7 @@ export class GameplayService {
                 x: this.startCoordinates[ positionIndex ].x,
                 y: this.startCoordinates[ positionIndex ].y,
                 rotation: this.startCoordinates[ positionIndex ].rot,
+                speed: 0,
                 name: data.name
             },
             ready: false,
