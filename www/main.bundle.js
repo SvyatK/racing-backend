@@ -1058,16 +1058,42 @@ var ModelLoaderService = ModelLoaderService_1 = (function () {
             var _this = this;
             return __generator(this, function (_a) {
                 return [2 /*return*/, new Promise(function (resolve, reject) { return __awaiter(_this, void 0, void 0, function () {
+                        var _this = this;
                         return __generator(this, function (_a) {
                             //timeout for not freezing UI, there are many sync calculations
-                            setTimeout(function () {
-                                new __WEBPACK_IMPORTED_MODULE_3_three_collada_loader___default.a().load("" + ModelLoaderService_1.PREFIX + path + filename + ".dae", function (colladaScene) {
-                                    resolve(colladaScene);
+                            setTimeout(function () { return __awaiter(_this, void 0, void 0, function () {
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0: return [4 /*yield*/, this.waitForAllContentLoaded()];
+                                        case 1:
+                                            _a.sent();
+                                            new __WEBPACK_IMPORTED_MODULE_3_three_collada_loader___default.a().load("" + ModelLoaderService_1.PREFIX + path + filename + ".dae", function (colladaScene) {
+                                                resolve(colladaScene);
+                                            });
+                                            return [2 /*return*/];
+                                    }
                                 });
-                            }, 15);
+                            }); }, 15);
                             return [2 /*return*/];
                         });
                     }); })];
+            });
+        });
+    };
+    ModelLoaderService.prototype.waitForAllContentLoaded = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                // TODO possibly check if nothing loading and resolve immediately
+                return [2 /*return*/, new Promise(function (resolve, reject) {
+                        __WEBPACK_IMPORTED_MODULE_6_three__["DefaultLoadingManager"].onProgress = function (item, loaded, total) {
+                            if (loaded === total) {
+                                resolve();
+                            }
+                        };
+                        __WEBPACK_IMPORTED_MODULE_6_three__["DefaultLoadingManager"].onError = function (item, loaded, total) {
+                            reject();
+                        };
+                    })];
             });
         });
     };
