@@ -417,7 +417,12 @@ module.exports = "<canvas #canvas class=\"full-screen\"></canvas>\n"
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Stage_3dComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_three__ = __webpack_require__("./node_modules/three/build/three.module.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__services_control_service__ = __webpack_require__("./src/services/control.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_three_orbit_controls__ = __webpack_require__("./node_modules/three-orbit-controls/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_three_orbit_controls___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_three_orbit_controls__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_three_sky__ = __webpack_require__("./node_modules/three-sky/Sky.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_three_sky___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_three_sky__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__services_control_service__ = __webpack_require__("./src/services/control.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_three_full__ = __webpack_require__("./node_modules/three-full/builds/Three.es.js");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -431,10 +436,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+ // TODO cleanup such dependencies; looks like three-full can solve all these problems
+
+
+var OrbitControls = __WEBPACK_IMPORTED_MODULE_2_three_orbit_controls__(__WEBPACK_IMPORTED_MODULE_1_three__);
 var Stage_3dComponent = /** @class */ (function () {
     function Stage_3dComponent(controlService) {
         var _this = this;
         this.controlService = controlService;
+        this.isOrbitControlEnabled = false;
         this.fieldOfView = 45;
         this.nearClippingPane = 1;
         this.farClippingPane = 10000;
@@ -444,16 +454,19 @@ var Stage_3dComponent = /** @class */ (function () {
         // TODO that's must be in map metadata
         this.sunLightPhi = 0.9;
         this.sunLightTheta = 2.5;
+        this.seaLevel = 220;
         controlService.cameraDistanceSubject
             .subscribe((function (value) {
             _this.cameraDistance = value;
-            var d = _this.cameraDistance;
-            _this.sunDirectLight.shadow.camera.bottom = -d;
-            _this.sunDirectLight.shadow.camera.top = d;
-            _this.sunDirectLight.shadow.camera.left = -d;
-            _this.sunDirectLight.shadow.camera.right = d;
-            // FIXME 4 is hardcode. Calculate by angle instead;
-            _this.sunDirectLight.shadow.camera.far = _this.cameraDistance * 4;
+            if (_this.sunDirectLight) {
+                var d = _this.cameraDistance;
+                _this.sunDirectLight.shadow.camera.bottom = -d;
+                _this.sunDirectLight.shadow.camera.top = d;
+                _this.sunDirectLight.shadow.camera.left = -d;
+                _this.sunDirectLight.shadow.camera.right = d;
+                // FIXME 4 is hardcode. Calculate by angle instead;
+                _this.sunDirectLight.shadow.camera.far = _this.cameraDistance * 4;
+            }
         }));
     }
     Object.defineProperty(Stage_3dComponent.prototype, "canvas", {
@@ -470,10 +483,16 @@ var Stage_3dComponent = /** @class */ (function () {
         this.camera.position.x = this.car.mesh.position.x + Math.cos(this.car.rotation) * this.car.speed / 2;
         this.camera.position.y = this.car.mesh.position.y + Math.sin(this.car.rotation) * this.car.speed / 2;
         this.camera.position.z = this.cameraDistance;
-        this.camera.up = new __WEBPACK_IMPORTED_MODULE_1_three__["Vector3"](0, 1, 0);
+        if (this.isOrbitControlEnabled) {
+            this.camera.position.y -= 0.5;
+        }
+        this.camera.up = this.isOrbitControlEnabled ? new __WEBPACK_IMPORTED_MODULE_1_three__["Vector3"](0, 0, 1) : new __WEBPACK_IMPORTED_MODULE_1_three__["Vector3"](0, 1, 0);
         this.camera.lookAt(new __WEBPACK_IMPORTED_MODULE_1_three__["Vector3"](this.car.mesh.position.x + Math.cos(this.car.rotation) * this.car.speed / 2, this.car.mesh.position.y + Math.sin(this.car.rotation) * this.car.speed / 2, this.car.mesh.position.z));
         this.sunDirectLight.position.set(this.car.mesh.position.x + this.cameraDistance * Math.cos(this.sunLightTheta) * Math.sin(this.sunLightPhi), this.car.mesh.position.y + this.cameraDistance * Math.sin(this.sunLightTheta) * Math.sin(this.sunLightPhi), this.car.mesh.position.z + this.cameraDistance * Math.cos(this.sunLightPhi));
         this.sunDirectLight.target.position.set(this.car.mesh.position.x, this.car.mesh.position.y, this.car.mesh.position.z);
+        if (this.isOrbitControlEnabled && this.orbitControls) {
+            this.orbitControls.update();
+        }
     };
     Stage_3dComponent.prototype.resizeCanvas = function (newWidth, newHeight) {
         this.canvas.width = newWidth;
@@ -482,6 +501,9 @@ var Stage_3dComponent = /** @class */ (function () {
         this.camera.updateProjectionMatrix();
         if (this.renderer) {
             this.renderer.setSize(this.canvas.width, this.canvas.height);
+        }
+        if (this.isOrbitControlEnabled && this.orbitControls) {
+            this.orbitControls.update();
         }
     };
     Stage_3dComponent.prototype.addCar = function (car, track) {
@@ -510,6 +532,9 @@ var Stage_3dComponent = /** @class */ (function () {
         /* Camera */
         var aspectRatio = this.canvas.width / this.canvas.height;
         this.camera = new __WEBPACK_IMPORTED_MODULE_1_three__["PerspectiveCamera"](this.fieldOfView, aspectRatio, this.nearClippingPane, this.farClippingPane);
+        if (this.isOrbitControlEnabled) {
+            this.orbitControls = new OrbitControls(this.camera);
+        }
         this.sunAmbientLight = new __WEBPACK_IMPORTED_MODULE_1_three__["HemisphereLight"](0xbbbbff, 0x8890a0, 0.85);
         this.sunAmbientLight.position.set(0, 0, 1);
         this.scene.add(this.sunAmbientLight);
@@ -527,6 +552,40 @@ var Stage_3dComponent = /** @class */ (function () {
         this.sunDirectLight.shadow.camera.far = this.cameraDistance * 4;
         this.scene.add(this.sunDirectLight);
         this.scene.add(this.sunDirectLight.target);
+        var skyPosition = new __WEBPACK_IMPORTED_MODULE_1_three__["Vector3"](Math.cos(this.sunLightTheta) * Math.sin(this.sunLightPhi), Math.sin(this.sunLightTheta) * Math.sin(this.sunLightPhi), Math.cos(this.sunLightPhi));
+        // skybox
+        this.sky = new __WEBPACK_IMPORTED_MODULE_3_three_sky__();
+        this.sky.scale.setScalar(8000);
+        this.sky.up = new __WEBPACK_IMPORTED_MODULE_1_three__["Vector3"](0, 0, 1);
+        // AG: cool hack here to rotate sky so "z" goes up instead of "y"
+        this.sky.material.fragmentShader = this.sky.material.fragmentShader.replace('const vec3 up = vec3( 0.0, 1.0, 0.0 );', 'const vec3 up = vec3( 0.0, 0.0, 1.0 );');
+        this.sky.material.vertexShader = this.sky.material.vertexShader.replace('const vec3 up = vec3( 0.0, 1.0, 0.0 );', 'const vec3 up = vec3( 0.0, 0.0, 1.0 );');
+        this.sky.material.uniforms.turbidity.value = 10;
+        this.sky.material.uniforms.rayleigh.value = 2;
+        this.sky.material.uniforms.luminance.value = 1;
+        this.sky.material.uniforms.mieCoefficient.value = 0.005;
+        this.sky.material.uniforms.mieDirectionalG.value = 0.8;
+        this.sky.material.uniforms.sunPosition.value = skyPosition.clone();
+        this.scene.add(this.sky);
+        // ocean
+        this.water = new __WEBPACK_IMPORTED_MODULE_5_three_full__["a" /* Water */](new __WEBPACK_IMPORTED_MODULE_1_three__["PlaneBufferGeometry"](10000, 10000), {
+            textureWidth: 128,
+            textureHeight: 128,
+            waterNormals: new __WEBPACK_IMPORTED_MODULE_1_three__["TextureLoader"]().load('assets/models/maps/common/textures/waternormals.jpg', function (texture) {
+                texture.wrapS = texture.wrapT = __WEBPACK_IMPORTED_MODULE_1_three__["RepeatWrapping"];
+            }),
+            alpha: 1.0,
+            sunDirection: skyPosition.clone(),
+            sunColor: 0xffffff,
+            waterColor: 0x003435,
+            distortionScale: 3.7
+        });
+        this.water.position.z = -this.seaLevel;
+        // AG: cool hack here to rotate water shader so "z" goes up instead of "y"
+        this.water.material.fragmentShader = this.water.material.fragmentShader.replace('getNoise( worldPosition.xz * size );', 'getNoise( worldPosition.xy * size );');
+        this.water.material.fragmentShader = this.water.material.fragmentShader.replace('vec3 surfaceNormal = normalize( noise.xzy * vec3( 1.5, 1.0, 1.5 ) );', 'vec3 surfaceNormal = normalize( noise.xyz * vec3( 1.5, 1.0, 1.5 ) );');
+        this.water.material.fragmentShader = this.water.material.fragmentShader.replace('vec2 distortion = surfaceNormal.xz * ( 0.001 + 1.0 / distance ) * distortionScale;', 'vec2 distortion = surfaceNormal.xy * ( 0.001 + 1.0 / distance ) * distortionScale;');
+        this.scene.add(this.water);
     };
     Stage_3dComponent.prototype.startRenderingLoop = function () {
         this.renderer = new __WEBPACK_IMPORTED_MODULE_1_three__["WebGLRenderer"]({
@@ -543,6 +602,7 @@ var Stage_3dComponent = /** @class */ (function () {
             requestAnimationFrame(render);
             component.animateCamera();
             component.controlService.adjustControlPositions();
+            component.water.material.uniforms.time.value += 1.0 / 60.0;
             component.renderer.clear();
             component.renderer.render(component.scene, component.camera);
             component.renderer.clearDepth();
@@ -557,6 +617,10 @@ var Stage_3dComponent = /** @class */ (function () {
         this.createScene();
     };
     __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["D" /* Input */])(),
+        __metadata("design:type", Boolean)
+    ], Stage_3dComponent.prototype, "isOrbitControlEnabled", void 0);
+    __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_9" /* ViewChild */])('canvas'),
         __metadata("design:type", __WEBPACK_IMPORTED_MODULE_0__angular_core__["t" /* ElementRef */])
     ], Stage_3dComponent.prototype, "canvasRef", void 0);
@@ -565,7 +629,7 @@ var Stage_3dComponent = /** @class */ (function () {
             selector: 'stage-3d',
             template: __webpack_require__("./src/components/stage-3d/stage-3d.html")
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_2__services_control_service__["a" /* ControlService */]])
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_4__services_control_service__["a" /* ControlService */]])
     ], Stage_3dComponent);
     return Stage_3dComponent;
 }());
