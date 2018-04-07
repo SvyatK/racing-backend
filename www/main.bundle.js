@@ -2092,7 +2092,7 @@ var ModelLoaderService = /** @class */ (function () {
     };
     ModelLoaderService.prototype.loadMap = function (mapName) {
         return __awaiter(this, void 0, void 0, function () {
-            var colladaScene, checkpoints, polygon, startPositions, i, isNeedToRemove, child, checkpointMatchResult, positionMatchResult, polygonMatchResult, polygonGeometry;
+            var colladaScene, checkpoints, polygon, startPositions, i, isNeedToRemove, child, checkpointMatchResult, positionMatchResult, polygonMatchResult, mesh, polygonGeometry;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, this.loadColladaScene("maps/" + mapName + "/", 'scene')];
@@ -2120,7 +2120,11 @@ var ModelLoaderService = /** @class */ (function () {
                                 }
                                 polygonMatchResult = child.colladaId.match(ModelLoaderService_1.POLYGON_NODE_REGEX);
                                 if (polygonMatchResult) {
-                                    polygonGeometry = child.children[0].geometry;
+                                    mesh = child;
+                                    while (mesh && !mesh.geometry) {
+                                        mesh = mesh.children[0];
+                                    }
+                                    polygonGeometry = mesh.geometry;
                                     if (polygonMatchResult[1] === 'outer') {
                                         polygon.outerPolygon = polygonGeometry.vertices.map(function (vertex) { return [vertex.x, vertex.y]; });
                                     }
