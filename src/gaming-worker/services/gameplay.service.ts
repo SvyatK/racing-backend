@@ -15,21 +15,21 @@ export class GameplayService {
 
     // TODO get from DAE
     private startCoordinates: { x: number, y: number, rot: number }[] = [ {
-        x: 97.94302,
-        y: -20.93091,
-        rot: 1.49
+        x: 99.649,
+        y: -20.993,
+        rot: 1.48
     }, {
-        x: 101.3607,
-        y: -21.11663,
-        rot: 1.49
+        x: 103.86,
+        y: -21.37,
+        rot: 1.48
     }, {
-        x: 104.4797,
-        y: -21.27523,
-        rot: 1.49
+        x: 96.247,
+        y: -20.621,
+        rot: 1.48
     }, {
-        x: 107.6465,
-        y: -21.39263,
-        rot: 1.49
+        x: 107.018,
+        y: -21.643,
+        rot: 1.48
     }
     ];
 
