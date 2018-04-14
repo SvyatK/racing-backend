@@ -454,7 +454,7 @@ var Stage_3dComponent = /** @class */ (function () {
         // TODO that's must be in map metadata
         this.sunLightPhi = 0.9;
         this.sunLightTheta = 2.5;
-        this.seaLevel = 220;
+        this.seaLevel = 58;
         controlService.cameraDistanceSubject
             .subscribe((function (value) {
             _this.cameraDistance = value;
@@ -2004,12 +2004,12 @@ var LoginService = /** @class */ (function () {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ModelLoaderService; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__("./node_modules/@angular/http/esm5/http.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__("./node_modules/rxjs/_esm5/add/operator/map.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_three_collada_loader__ = __webpack_require__("./node_modules/three-collada-loader/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_three_collada_loader___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_three_collada_loader__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__models_map_checkpoint_model__ = __webpack_require__("./src/models/map-checkpoint.model.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__models_map_data_model__ = __webpack_require__("./src/models/map-data.model.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_three__ = __webpack_require__("./node_modules/three/build/three.module.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_three__ = __webpack_require__("./node_modules/three/build/three.module.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_map__ = __webpack_require__("./node_modules/rxjs/_esm5/add/operator/map.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_three_collada_loader__ = __webpack_require__("./node_modules/three-collada-loader/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_three_collada_loader___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_three_collada_loader__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__models_map_checkpoint_model__ = __webpack_require__("./src/models/map-checkpoint.model.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__models_map_data_model__ = __webpack_require__("./src/models/map-data.model.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__models_map_polygon_model__ = __webpack_require__("./src/models/map-polygon.model.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__models_player_position_model__ = __webpack_require__("./src/models/player-position.model.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -2108,14 +2108,14 @@ var ModelLoaderService = /** @class */ (function () {
                                 isNeedToRemove = true;
                             }
                             else {
-                                checkpointMatchResult = child.colladaId.match(__WEBPACK_IMPORTED_MODULE_4__models_map_checkpoint_model__["a" /* default */].NODE_NAME_REGEX);
+                                checkpointMatchResult = child.colladaId.match(__WEBPACK_IMPORTED_MODULE_5__models_map_checkpoint_model__["a" /* default */].NODE_NAME_REGEX);
                                 if (checkpointMatchResult) {
-                                    checkpoints[+checkpointMatchResult[1]] = __WEBPACK_IMPORTED_MODULE_4__models_map_checkpoint_model__["a" /* default */].fromDummyObject(child);
+                                    checkpoints[+checkpointMatchResult[1]] = __WEBPACK_IMPORTED_MODULE_5__models_map_checkpoint_model__["a" /* default */].fromDummyObject(child);
                                     isNeedToRemove = true;
                                 }
                                 positionMatchResult = child.colladaId.match(ModelLoaderService_1.POSITION_NODE_REGEX);
                                 if (positionMatchResult) {
-                                    startPositions[+positionMatchResult[1]] = new __WEBPACK_IMPORTED_MODULE_8__models_player_position_model__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_6_three__["Vector2"](child.position.x, child.position.y), child.rotation.z);
+                                    startPositions[+positionMatchResult[1]] = new __WEBPACK_IMPORTED_MODULE_8__models_player_position_model__["a" /* default */](new __WEBPACK_IMPORTED_MODULE_2_three__["Vector2"](child.position.x, child.position.y), child.rotation.z);
                                     isNeedToRemove = true;
                                 }
                                 polygonMatchResult = child.colladaId.match(ModelLoaderService_1.POLYGON_NODE_REGEX);
@@ -2139,7 +2139,23 @@ var ModelLoaderService = /** @class */ (function () {
                                 i--;
                             }
                         }
-                        return [2 /*return*/, new __WEBPACK_IMPORTED_MODULE_5__models_map_data_model__["a" /* default */](colladaScene.scene, checkpoints, polygon, startPositions)];
+                        // colladaScene.scene.traverse(function (child) {
+                        //   if ( child instanceof THREE.Mesh ) {
+                        //     // TODO create owm format and omit these hacks
+                        //     if ( child.parent && child.parent.name === 'cliffs' ) {
+                        //       // child.material = new MeshStandardMaterial();
+                        //       // child.material.roughness = 1;
+                        //       // child.material.metalness = 0;
+                        //       // child.material.map = new THREE.TextureLoader().load('assets/models/maps/default-map/images/2_diffuse.jpg');
+                        //       child.material.color = new Color(0xbc,0xbc, 0xbc);
+                        //       child.material.bumpMap = new THREE.TextureLoader().load('assets/models/maps/default-map/images/5_bump.jpg');
+                        //       child.material.bumpScale = 0.3;
+                        //       // child.material.aoMap = new THREE.TextureLoader().load('assets/models/maps/default-map/images/1_ambientocclusion.jpg');
+                        //       // child.material.specularMap = new THREE.TextureLoader().load('assets/models/maps/default-map/images/3_reflectiveocclusion.jpg');
+                        //     }
+                        //   }
+                        // });
+                        return [2 /*return*/, new __WEBPACK_IMPORTED_MODULE_6__models_map_data_model__["a" /* default */](colladaScene.scene, checkpoints, polygon, startPositions)];
                 }
             });
         });
@@ -2154,7 +2170,8 @@ var ModelLoaderService = /** @class */ (function () {
                         setTimeout(function () { return __awaiter(_this, void 0, void 0, function () {
                             var _this = this;
                             return __generator(this, function (_a) {
-                                __WEBPACK_IMPORTED_MODULE_3_three_collada_loader__().load("" + ModelLoaderService_1.PREFIX + path + filename + ".dae", function (colladaScene) { return __awaiter(_this, void 0, void 0, function () {
+                                __WEBPACK_IMPORTED_MODULE_4_three_collada_loader__()
+                                    .load("" + ModelLoaderService_1.PREFIX + path + filename + ".dae", function (colladaScene) { return __awaiter(_this, void 0, void 0, function () {
                                     return __generator(this, function (_a) {
                                         switch (_a.label) {
                                             case 0: return [4 /*yield*/, this.waitForAllContentLoaded()];
@@ -2177,12 +2194,12 @@ var ModelLoaderService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 // TODO possibly check if nothing loading and resolve immediately
                 return [2 /*return*/, new Promise(function (resolve, reject) {
-                        __WEBPACK_IMPORTED_MODULE_6_three__["DefaultLoadingManager"].onProgress = function (item, loaded, total) {
+                        __WEBPACK_IMPORTED_MODULE_2_three__["DefaultLoadingManager"].onProgress = function (item, loaded, total) {
                             if (loaded === total) {
                                 resolve();
                             }
                         };
-                        __WEBPACK_IMPORTED_MODULE_6_three__["DefaultLoadingManager"].onError = function (item, loaded, total) {
+                        __WEBPACK_IMPORTED_MODULE_2_three__["DefaultLoadingManager"].onError = function (item, loaded, total) {
                             reject();
                         };
                     })];
