@@ -459,7 +459,7 @@ var Stage_3dComponent = /** @class */ (function () {
             .subscribe((function (value) {
             _this.cameraDistance = value;
             if (_this.sunDirectLight) {
-                var d = _this.cameraDistance;
+                var d = _this.cameraDistance * 1.5;
                 _this.sunDirectLight.shadow.camera.bottom = -d;
                 _this.sunDirectLight.shadow.camera.top = d;
                 _this.sunDirectLight.shadow.camera.left = -d;
@@ -540,7 +540,7 @@ var Stage_3dComponent = /** @class */ (function () {
         this.scene.add(this.sunAmbientLight);
         this.sunDirectLight = new __WEBPACK_IMPORTED_MODULE_1_three__["DirectionalLight"](0xffffff, 1.5);
         this.sunDirectLight.castShadow = true;
-        var d = this.cameraDistance;
+        var d = this.cameraDistance * 1.5;
         this.sunDirectLight.shadow.camera.bottom = -d;
         this.sunDirectLight.shadow.camera.top = d;
         this.sunDirectLight.shadow.camera.left = -d;
@@ -552,6 +552,7 @@ var Stage_3dComponent = /** @class */ (function () {
         this.sunDirectLight.shadow.camera.far = this.cameraDistance * 4;
         this.scene.add(this.sunDirectLight);
         this.scene.add(this.sunDirectLight.target);
+        console.log(this.sunDirectLight);
         var skyPosition = new __WEBPACK_IMPORTED_MODULE_1_three__["Vector3"](Math.cos(this.sunLightTheta) * Math.sin(this.sunLightPhi), Math.sin(this.sunLightTheta) * Math.sin(this.sunLightPhi), Math.cos(this.sunLightPhi));
         // skybox
         this.sky = new __WEBPACK_IMPORTED_MODULE_3_three_sky__();
@@ -580,6 +581,7 @@ var Stage_3dComponent = /** @class */ (function () {
             waterColor: 0x003435,
             distortionScale: 3.7
         });
+        this.water.material.uniforms.size.value = 3;
         this.water.position.z = -this.seaLevel;
         // AG: cool hack here to rotate water shader so "z" goes up instead of "y"
         this.water.material.fragmentShader = this.water.material.fragmentShader.replace('getNoise( worldPosition.xz * size );', 'getNoise( worldPosition.xy * size );');
@@ -2065,6 +2067,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 
 
 
+
 var ModelLoaderService = /** @class */ (function () {
     function ModelLoaderService(http) {
         this.http = http;
@@ -2139,22 +2142,22 @@ var ModelLoaderService = /** @class */ (function () {
                                 i--;
                             }
                         }
-                        // colladaScene.scene.traverse(function (child) {
-                        //   if ( child instanceof THREE.Mesh ) {
-                        //     // TODO create owm format and omit these hacks
-                        //     if ( child.parent && child.parent.name === 'cliffs' ) {
-                        //       // child.material = new MeshStandardMaterial();
-                        //       // child.material.roughness = 1;
-                        //       // child.material.metalness = 0;
-                        //       // child.material.map = new THREE.TextureLoader().load('assets/models/maps/default-map/images/2_diffuse.jpg');
-                        //       child.material.color = new Color(0xbc,0xbc, 0xbc);
-                        //       child.material.bumpMap = new THREE.TextureLoader().load('assets/models/maps/default-map/images/5_bump.jpg');
-                        //       child.material.bumpScale = 0.3;
-                        //       // child.material.aoMap = new THREE.TextureLoader().load('assets/models/maps/default-map/images/1_ambientocclusion.jpg');
-                        //       // child.material.specularMap = new THREE.TextureLoader().load('assets/models/maps/default-map/images/3_reflectiveocclusion.jpg');
-                        //     }
-                        //   }
-                        // });
+                        colladaScene.scene.traverse(function (child) {
+                            if (child instanceof __WEBPACK_IMPORTED_MODULE_2_three__["Mesh"]) {
+                                // TODO create owm format and omit these hacks
+                                if (child.parent && child.parent.name === 'cliffs') {
+                                    // child.material = new MeshStandardMaterial();
+                                    // child.material.roughness = 1;
+                                    // child.material.metalness = 0;
+                                    // child.material.map = new THREE.TextureLoader().load('assets/models/maps/default-map/images/2_diffuse.jpg');
+                                    child.material.color = new __WEBPACK_IMPORTED_MODULE_2_three__["Color"](0.68, 0.67, 0.65);
+                                    // child.material.bumpMap = new THREE.TextureLoader().load('assets/models/maps/default-map/images/5_bump.jpg');
+                                    child.material.bumpScale = 0.3;
+                                    // child.material.aoMap = new THREE.TextureLoader().load('assets/models/maps/default-map/images/1_ambientocclusion.jpg');
+                                    // child.material.specularMap = new THREE.TextureLoader().load('assets/models/maps/default-map/images/3_reflectiveocclusion.jpg');
+                                }
+                            }
+                        });
                         return [2 /*return*/, new __WEBPACK_IMPORTED_MODULE_6__models_map_data_model__["a" /* default */](colladaScene.scene, checkpoints, polygon, startPositions)];
                 }
             });
@@ -2170,8 +2173,7 @@ var ModelLoaderService = /** @class */ (function () {
                         setTimeout(function () { return __awaiter(_this, void 0, void 0, function () {
                             var _this = this;
                             return __generator(this, function (_a) {
-                                __WEBPACK_IMPORTED_MODULE_4_three_collada_loader__()
-                                    .load("" + ModelLoaderService_1.PREFIX + path + filename + ".dae", function (colladaScene) { return __awaiter(_this, void 0, void 0, function () {
+                                __WEBPACK_IMPORTED_MODULE_4_three_collada_loader__().load("" + ModelLoaderService_1.PREFIX + path + filename + ".dae", function (colladaScene) { return __awaiter(_this, void 0, void 0, function () {
                                     return __generator(this, function (_a) {
                                         switch (_a.label) {
                                             case 0: return [4 /*yield*/, this.waitForAllContentLoaded()];
