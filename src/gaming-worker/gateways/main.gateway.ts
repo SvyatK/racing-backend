@@ -1,6 +1,7 @@
 import { OnGatewayConnection, OnGatewayDisconnect, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { SocketSessionMiddleware } from '../../app/middlewares/session.middleware';
 import { GameplayService } from '../services/gameplay.service';
+import StepDataDto from '../dto/step-data.dto';
 
 @WebSocketGateway({
     middlewares: [ SocketSessionMiddleware ]
@@ -31,7 +32,7 @@ export class MainGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
 
     @SubscribeMessage('nextStep')
-    onNextStep(socket: SocketIO.Socket, data: any): void {
+    onNextStep(socket: SocketIO.Socket, data: StepDataDto): void {
         this.gameplayService.nextStep(this.io, socket, data)
             .then();
     }

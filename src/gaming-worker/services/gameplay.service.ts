@@ -5,6 +5,7 @@ import { GameState } from '../../app/business/interfaces/enum/game-state.enum';
 import { UserDataDTO } from '../../app/dto/responses/user-data.dto';
 import PlayerDataDTO from '../dto/player-data.dto';
 import GamingWorkerEnvironment from '../gaming-worker-environment';
+import StepDataDto from '../dto/step-data.dto';
 
 @Component()
 export class GameplayService {
@@ -41,7 +42,7 @@ export class GameplayService {
             socket.disconnect(true);
         }
         const user: UserDataDTO = UserDataDTO.fromOwnUserDataDTO(socket.client.request.session.user);
-        this.players.push(new PlayerModel(socket, user, {}));
+        this.players.push(new PlayerModel(socket, user, null));
         if ( user._id === GamingWorkerEnvironment.OWNER_ID ) {
             this.gamingServerMainService.onOwnerConnected();
         }
@@ -75,26 +76,29 @@ export class GameplayService {
     async playerReadyToStart(io: SocketIO.Server, socket: SocketIO.Socket, data: any): Promise<void> {
         console.log(`${socket.id} ready to start`);
         const positionIndex: number = this.countReadyToStartPlayers();
-        const container = {
+        this.getPlayerBySocket(socket).data = {
             item: {
-                id: data.id,
-                x: this.startCoordinates[ positionIndex ].x,
-                y: this.startCoordinates[ positionIndex ].y,
-                rotation: this.startCoordinates[ positionIndex ].rot,
-                speed: 0,
-                name: data.name
+                id: +data.id,
+                trajectory: null,
+                finalCarProperties: {
+                    position: {
+                        x: this.startCoordinates[ positionIndex ].x,
+                        y: this.startCoordinates[ positionIndex ].y
+                    },
+                    rotation: this.startCoordinates[ positionIndex ].rot,
+                    speed: 0
+                }
             },
-            ready: false,
-            finished: false
+            finished: false,
+            ready: false
         };
-        this.getPlayerBySocket(socket).data = container;
         if ( this.countReadyToStartPlayers() === GameplayService.PLAYERS_COUNT ) {
             this.gamingServerMainService.reportGameStarted();
             this.update(io);
         }
     }
 
-    async nextStep(io: SocketIO.Server, socket: SocketIO.Socket, data: any): Promise<void> {
+    async nextStep(io: SocketIO.Server, socket: SocketIO.Socket, data: StepDataDto): Promise<void> {
         let currentContainer;
         //replace item data
         for (let i = 0; i < this.players.length; i++) {
@@ -124,9 +128,9 @@ export class GameplayService {
 
     // TODO types
     private update(io: SocketIO.Server): void {
-        const itemsToSend = this.players
-                                .map((player: PlayerModel): any => player.data.item)
-                                .filter(item => !!item);
+        const itemsToSend: StepDataDto[] = this.players
+                                               .map((player: PlayerModel): StepDataDto => player.data.item)
+                                               .filter(item => !!item);
         if ( itemsToSend.length >= GameplayService.PLAYERS_COUNT ) {
             io.sockets.emit('stepComplete', itemsToSend);
         }
