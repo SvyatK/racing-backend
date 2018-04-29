@@ -1209,6 +1209,7 @@ var CarService = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_control_next_position_area__ = __webpack_require__("./src/components/control/next-position-area.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__components_control_next_position_arc__ = __webpack_require__("./src/components/control/next-position-arc.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__consts_app_consts__ = __webpack_require__("./src/consts/app.consts.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__utils_cinematics_utils__ = __webpack_require__("./src/utils/cinematics.utils.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1253,6 +1254,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+
 
 
 
@@ -1380,7 +1382,7 @@ var ControlService = /** @class */ (function () {
         }); });
     };
     ControlService.prototype.updateCameraDistance = function () {
-        var cameraDistance = Math.max(this.car.characteristics.getMaxAcceleration(0) / Math.tan(this.stage3d.fieldOfView * Math.PI / 720), (this.car.speed + this.car.characteristics.getMaxAcceleration(this.car.speed)) / Math.tan(this.stage3d.fieldOfView * Math.PI / 360));
+        var cameraDistance = Math.max(__WEBPACK_IMPORTED_MODULE_9__utils_cinematics_utils__["a" /* CinematicsUtils */].getDistanceInUniformlyAcceleratedMotion(0, this.car.characteristics.getMaxAcceleration(0), 1) / Math.tan(this.stage3d.fieldOfView * Math.PI / 720), (__WEBPACK_IMPORTED_MODULE_9__utils_cinematics_utils__["a" /* CinematicsUtils */].getDistanceInUniformlyAcceleratedMotion(this.car.speed, this.car.characteristics.getMaxAcceleration(this.car.speed), 1)) / Math.tan(this.stage3d.fieldOfView * Math.PI / 360));
         if (cameraDistance === this.cameraDistance) {
             return;
         }
@@ -1499,6 +1501,7 @@ var ControlService = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__utils_app_utils__ = __webpack_require__("./src/utils/app.utils.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__control_service__ = __webpack_require__("./src/services/control.service.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__models_car_characteristics_model__ = __webpack_require__("./src/models/car-characteristics.model.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__utils_cinematics_utils__ = __webpack_require__("./src/utils/cinematics.utils.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1543,6 +1546,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+
 
 
 
@@ -1675,13 +1679,13 @@ var GameplayService = /** @class */ (function () {
                         currentSpeed = 0;
                         if (!this.mapPolygon.isContainingPoint(myCar.getPosition())) {
                             minRadius = 0;
-                            maxRadius = myCar.characteristics.getMaxAcceleration(0);
+                            maxRadius = this.getMaxDistanceOnNextStep(myCar, 0);
                             currentSpeed = 0;
                             maxSteeringCurvature = myCar.characteristics.getSteeringMaxCurvature(0);
                         }
                         else {
-                            minRadius = Math.max(0, myCar.speed - myCar.characteristics.getMaxDeceleration(myCar.speed));
-                            maxRadius = myCar.speed + myCar.characteristics.getMaxAcceleration(myCar.speed);
+                            minRadius = Math.max(0, this.getMinDistanceOnNextStep(myCar));
+                            maxRadius = this.getMaxDistanceOnNextStep(myCar);
                             currentSpeed = myCar.speed;
                             maxSteeringCurvature = myCar.characteristics.getSteeringMaxCurvature(myCar.speed);
                         }
@@ -1691,8 +1695,8 @@ var GameplayService = /** @class */ (function () {
                         console.log("cur speed: " + currentSpeed + " m/s; " + currentSpeed * 3.6 + " km/h");
                         console.log("maxSteeringCurvature: " + maxSteeringCurvature);
                         // back draft
-                        if (currentSpeed < 0.01) {
-                            minRadius = -maxRadius;
+                        if (Math.abs(currentSpeed) < 0.25) {
+                            minRadius = -maxRadius + Math.abs(currentSpeed);
                         }
                         this.controlService.updateCameraDistance();
                         // FIXME gold hammer (controls are updating bad without it)
@@ -1748,7 +1752,7 @@ var GameplayService = /** @class */ (function () {
                                     }
                                 }
                             }
-                            newPositioningProperties.speed = Math.max(0, trajectory.l);
+                            newPositioningProperties.speed = Math.max(0, __WEBPACK_IMPORTED_MODULE_12__utils_cinematics_utils__["a" /* CinematicsUtils */].getSpeedInUniformlyAcceleratedMotionByDistance(myCar.speed, trajectory.l, 1));
                             newPositioningProperties.rotation += trajectory.pointerRotation;
                             newPositioningProperties.x = newPosition.x;
                             newPositioningProperties.y = newPosition.y;
@@ -1758,6 +1762,14 @@ var GameplayService = /** @class */ (function () {
                 }
             });
         });
+    };
+    GameplayService.prototype.getMinDistanceOnNextStep = function (car, velocity) {
+        if (velocity === void 0) { velocity = car.speed; }
+        return __WEBPACK_IMPORTED_MODULE_12__utils_cinematics_utils__["a" /* CinematicsUtils */].getDistanceInUniformlyAcceleratedMotion(velocity, -car.characteristics.getMaxDeceleration(velocity), 1);
+    };
+    GameplayService.prototype.getMaxDistanceOnNextStep = function (car, velocity) {
+        if (velocity === void 0) { velocity = car.speed; }
+        return __WEBPACK_IMPORTED_MODULE_12__utils_cinematics_utils__["a" /* CinematicsUtils */].getDistanceInUniformlyAcceleratedMotion(velocity, car.characteristics.getMaxAcceleration(velocity), 1);
     };
     GameplayService = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["A" /* Injectable */])(),
@@ -2590,6 +2602,30 @@ var AppUtils = /** @class */ (function () {
     return AppUtils;
 }());
 /* harmony default export */ __webpack_exports__["a"] = (AppUtils);
+
+
+/***/ }),
+
+/***/ "./src/utils/cinematics.utils.ts":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return CinematicsUtils; });
+var CinematicsUtils = /** @class */ (function () {
+    function CinematicsUtils() {
+    }
+    CinematicsUtils.getDistanceInUniformlyAcceleratedMotion = function (startVelocity, acceleration, time) {
+        return time * (startVelocity + acceleration * time / 2);
+    };
+    CinematicsUtils.getAccelerationInUniformlyAcceleratedMotion = function (startVelocity, distance, time) {
+        return (2 / Math.pow(time, 2)) * (distance - startVelocity * time);
+    };
+    CinematicsUtils.getSpeedInUniformlyAcceleratedMotionByDistance = function (startVelocity, distance, time) {
+        return startVelocity + CinematicsUtils.getAccelerationInUniformlyAcceleratedMotion(startVelocity, distance, time) * time;
+    };
+    return CinematicsUtils;
+}());
+
 
 
 /***/ }),
