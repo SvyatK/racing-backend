@@ -406,7 +406,14 @@ var NextPositionArea = /** @class */ (function (_super) {
 /***/ "./src/components/stage-3d/stage-3d.html":
 /***/ (function(module, exports) {
 
-module.exports = "<canvas #canvas class=\"full-screen\"></canvas>\n"
+module.exports = "<canvas #worldCanvas class=\"full-screen\"></canvas>\n<canvas #controlCanvas class=\"full-screen\"></canvas>\n"
+
+/***/ }),
+
+/***/ "./src/components/stage-3d/stage-3d.scss":
+/***/ (function(module, exports) {
+
+module.exports = "stage-3d {\n  width: 100%;\n  height: 100%; }\n\n.full-screen {\n  width: 100%;\n  height: 100%;\n  position: absolute; }\n"
 
 /***/ }),
 
@@ -431,6 +438,41 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
 };
 
 
@@ -469,9 +511,16 @@ var Stage_3dComponent = /** @class */ (function () {
             }
         }));
     }
-    Object.defineProperty(Stage_3dComponent.prototype, "canvas", {
+    Object.defineProperty(Stage_3dComponent.prototype, "worldCanvas", {
         get: function () {
-            return this.canvasRef.nativeElement;
+            return this.worldCanvasRef.nativeElement;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Stage_3dComponent.prototype, "controlCanvas", {
+        get: function () {
+            return this.controlCanvasRef.nativeElement;
         },
         enumerable: true,
         configurable: true
@@ -495,12 +544,17 @@ var Stage_3dComponent = /** @class */ (function () {
         }
     };
     Stage_3dComponent.prototype.resizeCanvas = function (newWidth, newHeight) {
-        this.canvas.width = newWidth;
-        this.canvas.height = newHeight;
-        this.camera.aspect = this.canvas.width / this.canvas.height;
+        this.worldCanvas.width = newWidth;
+        this.worldCanvas.height = newHeight;
+        this.controlCanvas.width = newWidth;
+        this.controlCanvas.height = newHeight;
+        this.camera.aspect = this.worldCanvas.width / this.worldCanvas.height;
         this.camera.updateProjectionMatrix();
-        if (this.renderer) {
-            this.renderer.setSize(this.canvas.width, this.canvas.height);
+        if (this.worldRenderer) {
+            this.worldRenderer.setSize(this.worldCanvas.width, this.worldCanvas.height);
+        }
+        if (this.controlRenderer) {
+            this.controlRenderer.setSize(this.controlCanvas.width, this.controlCanvas.height);
         }
         if (this.isOrbitControlEnabled && this.orbitControls) {
             this.orbitControls.update();
@@ -530,7 +584,7 @@ var Stage_3dComponent = /** @class */ (function () {
         this.scene = new __WEBPACK_IMPORTED_MODULE_1_three__["Scene"]();
         this.controlScene = new __WEBPACK_IMPORTED_MODULE_1_three__["Scene"]();
         /* Camera */
-        var aspectRatio = this.canvas.width / this.canvas.height;
+        var aspectRatio = this.worldCanvas.width / this.worldCanvas.height;
         this.camera = new __WEBPACK_IMPORTED_MODULE_1_three__["PerspectiveCamera"](this.fieldOfView, aspectRatio, this.nearClippingPane, this.farClippingPane);
         if (this.isOrbitControlEnabled) {
             this.orbitControls = new OrbitControls(this.camera);
@@ -589,30 +643,45 @@ var Stage_3dComponent = /** @class */ (function () {
         this.water.material.fragmentShader = this.water.material.fragmentShader.replace('vec2 distortion = surfaceNormal.xz * ( 0.001 + 1.0 / distance ) * distortionScale;', 'vec2 distortion = surfaceNormal.xy * ( 0.001 + 1.0 / distance ) * distortionScale;');
         this.scene.add(this.water);
     };
-    Stage_3dComponent.prototype.startRenderingLoop = function () {
-        this.renderer = new __WEBPACK_IMPORTED_MODULE_1_three__["WebGLRenderer"]({
-            canvas: this.canvas,
-            antialias: true
+    Stage_3dComponent.prototype.initCanvases = function () {
+        this.worldRenderer = new __WEBPACK_IMPORTED_MODULE_1_three__["WebGLRenderer"]({
+            canvas: this.worldCanvas,
+            antialias: true,
+            transparent: true
         });
-        this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMapType = __WEBPACK_IMPORTED_MODULE_1_three__["PCFSoftShadowMap"];
-        this.renderer.setPixelRatio(devicePixelRatio);
-        this.renderer.setSize(this.canvas.width, this.canvas.height);
-        this.renderer.autoClear = false;
+        this.worldRenderer.shadowMap.enabled = true;
+        this.worldRenderer.shadowMapType = __WEBPACK_IMPORTED_MODULE_1_three__["PCFSoftShadowMap"];
+        this.worldRenderer.setPixelRatio(devicePixelRatio);
+        this.worldRenderer.setSize(this.worldCanvas.width, this.worldCanvas.height);
+        this.controlRenderer = new __WEBPACK_IMPORTED_MODULE_1_three__["WebGLRenderer"]({
+            canvas: this.controlCanvas,
+            antialias: true,
+            alpha: true
+        });
+        this.controlRenderer.setPixelRatio(devicePixelRatio);
+        this.controlRenderer.setSize(this.controlCanvas.width, this.controlCanvas.height);
+    };
+    Stage_3dComponent.prototype.startRenderingLoop = function () {
         var component = this;
         (function render() {
-            requestAnimationFrame(render);
-            component.animateCamera();
-            component.controlService.adjustControlPositions();
-            component.water.material.uniforms.time.value += 1.0 / 60.0;
-            component.renderer.clear();
-            component.renderer.render(component.scene, component.camera);
-            component.renderer.clearDepth();
-            component.renderer.render(component.controlScene, component.camera);
+            return __awaiter(this, void 0, void 0, function () {
+                return __generator(this, function (_a) {
+                    component.animateCamera();
+                    component.controlService.adjustControlPositions();
+                    component.water.material.uniforms.time.value += 1.0 / 60.0;
+                    component.worldRenderer.clear();
+                    component.worldRenderer.render(component.scene, component.camera);
+                    component.controlRenderer.clear();
+                    component.controlRenderer.render(component.controlScene, component.camera);
+                    requestAnimationFrame(render);
+                    return [2 /*return*/];
+                });
+            });
         }());
     };
     Stage_3dComponent.prototype.ngAfterViewInit = function () {
-        this.resizeCanvas(window.innerWidth, window.innerHeight - 56);
+        this.resizeCanvas(window.innerWidth, window.innerHeight);
+        this.initCanvases();
         this.startRenderingLoop();
     };
     Stage_3dComponent.prototype.ngOnInit = function () {
@@ -623,13 +692,18 @@ var Stage_3dComponent = /** @class */ (function () {
         __metadata("design:type", Boolean)
     ], Stage_3dComponent.prototype, "isOrbitControlEnabled", void 0);
     __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_9" /* ViewChild */])('canvas'),
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_9" /* ViewChild */])('worldCanvas'),
         __metadata("design:type", __WEBPACK_IMPORTED_MODULE_0__angular_core__["t" /* ElementRef */])
-    ], Stage_3dComponent.prototype, "canvasRef", void 0);
+    ], Stage_3dComponent.prototype, "worldCanvasRef", void 0);
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_9" /* ViewChild */])('controlCanvas'),
+        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_0__angular_core__["t" /* ElementRef */])
+    ], Stage_3dComponent.prototype, "controlCanvasRef", void 0);
     Stage_3dComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["n" /* Component */])({
             selector: 'stage-3d',
-            template: __webpack_require__("./src/components/stage-3d/stage-3d.html")
+            template: __webpack_require__("./src/components/stage-3d/stage-3d.html"),
+            styles: [__webpack_require__("./src/components/stage-3d/stage-3d.scss")]
         }),
         __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_4__services_control_service__["a" /* ControlService */]])
     ], Stage_3dComponent);
@@ -1247,7 +1321,7 @@ var ControlService = /** @class */ (function () {
     });
     ControlService.prototype.initControls = function (stage3d, car) {
         var _this = this;
-        this.canvas = stage3d.canvas;
+        this.canvas = stage3d.controlCanvas;
         this.stage3d = stage3d;
         this.car = car;
         // putting controls on stage
@@ -1496,7 +1570,7 @@ var GameplayService = /** @class */ (function () {
         this.controlService = controlService;
         window.onresize = function (e) {
             _this.ngZone.run(function () {
-                _this.resizeCanvas(window.innerWidth, window.innerHeight - 56);
+                _this.resizeCanvas(window.innerWidth, window.innerHeight);
             });
         };
     }
@@ -1615,6 +1689,7 @@ var GameplayService = /** @class */ (function () {
                         console.log("min speed: " + minRadius + " m/s; " + minRadius * 3.6 + " km/h");
                         console.log("max speed: " + maxRadius + " m/s; " + maxRadius * 3.6 + " km/h");
                         console.log("cur speed: " + currentSpeed + " m/s; " + currentSpeed * 3.6 + " km/h");
+                        console.log("maxSteeringCurvature: " + maxSteeringCurvature);
                         // back draft
                         if (currentSpeed < 0.01) {
                             minRadius = -maxRadius;
@@ -2155,6 +2230,15 @@ var ModelLoaderService = /** @class */ (function () {
                                     child.material.bumpScale = 0.3;
                                     // child.material.aoMap = new THREE.TextureLoader().load('assets/models/maps/default-map/images/1_ambientocclusion.jpg');
                                     // child.material.specularMap = new THREE.TextureLoader().load('assets/models/maps/default-map/images/3_reflectiveocclusion.jpg');
+                                }
+                                else if (child.parent && child.parent.name === 'tonnels_arc') {
+                                    child.material.color = new __WEBPACK_IMPORTED_MODULE_2_three__["Color"](0.68, 0.67, 0.65);
+                                    child.material.bumpScale = 0.25;
+                                }
+                                else if (child.parent && child.parent.name === 'bridge01') {
+                                    child.material.color = new __WEBPACK_IMPORTED_MODULE_2_three__["Color"](0.76, 0.76, 0.66);
+                                    child.material.specular = new __WEBPACK_IMPORTED_MODULE_2_three__["Color"](0, 0, 0);
+                                    child.material.bumpScale = 0.1;
                                 }
                             }
                         });
