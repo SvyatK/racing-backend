@@ -19,6 +19,7 @@ async function bootstrap() {
     }
     const expressInstance: express.Express = express();
     expressInstance.use(express.static(path.join(__dirname, '../www')));
+    expressInstance.get('*', (req, res) => res.sendFile(path.join(__dirname, '../www', 'index.html')));
     const app = await NestFactory.create(ApplicationModule, expressInstance, appOptions);
     const options = new DocumentBuilder()
         .setTitle('Racing Backend')
