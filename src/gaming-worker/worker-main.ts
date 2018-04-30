@@ -8,7 +8,7 @@ import { APP_CONFIG } from '../app/conf/config';
 import { NestApplicationOptions } from '@nestjs/common/interfaces/nest-application-options.interface';
 
 async function bootstrap() {
-    console.log(`Starting gaming worker. Global environment: ${APP_CONFIG.env}. Port: ${GamingWorkerEnvironment.PORT}`);
+    console.log(`Starting gaming worker. Global environment: ${APP_CONFIG.env}. Port: ${GamingWorkerEnvironment.PORT}. Players: ${GamingWorkerEnvironment.PLAYERS_COUNT}`);
     let appOptions: NestApplicationOptions = {};
     if ( APP_CONFIG.server.useSSL ) {
         appOptions.httpsOptions = {

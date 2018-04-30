@@ -12,6 +12,9 @@ export const LobbySchema = new mongoose.Schema({
     serverUrl: {
         type: String
     },
+    playersCount: {
+        type: Number
+    },
     state: {
         type: Number,
         default: GameState.Initializing,

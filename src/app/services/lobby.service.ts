@@ -11,6 +11,8 @@ import { GamingServersManager } from '../managers/gaming-servers.manager';
 import { ChildProcessMessage } from '../../gaming-worker/consts/child-process-message.const';
 import { AppUtils } from '../utils/app.utils';
 import { GameState } from '../business/interfaces/enum/game-state.enum';
+import { LobbyInitialDataDTO } from '../dto/requests/lobby-initial-data.dto';
+import MathUtils from '../utils/math.utils';
 
 @Component()
 export class LobbyService {
@@ -45,7 +47,7 @@ export class LobbyService {
         return lobbies.map((lobby: ILobby): LobbyDTO => LobbyDTO.fromLobby(lobby));
     }
 
-    async createLobby(req: ExpressRequest): Promise<LobbyDTO> {
+    async createLobby(req: ExpressRequest, initialData: LobbyInitialDataDTO = new LobbyInitialDataDTO()): Promise<LobbyDTO> {
         const userModel: IUser = await this.userDao.getUserById(req.session.user._id);
         const lobbyModel: ILobby = await this.lobbyDao.create(userModel);
         let port: number = this.gamingServersManager.acquirePort(lobbyModel._id);
@@ -54,6 +56,8 @@ export class LobbyService {
             throw new HttpException('Server overloaded. Try again later', HttpStatus.NOT_ACCEPTABLE);
         }
         lobbyModel.serverUrl = `::${port}`;
+        // FIXME re-check validation so other values can't get here
+        lobbyModel.playersCount = MathUtils.toRange(initialData.playersCount, 1, 8);
         await lobbyModel.save();
         let gamingProcess: ChildProcess;
         try {
@@ -93,7 +97,7 @@ export class LobbyService {
     async startGamingServer(lobbyModel: ILobby, port: number, owner: IUser): Promise<ChildProcess> {
         // automatically rejects in 10 seconds if nothing happen
         return new Promise<ChildProcess>(async (resolve, reject) => {
-            const forked: ChildProcess = fork(path.join(__dirname, '../../../index-worker.js'), [ lobbyModel._id, port, owner._id ]);
+            const forked: ChildProcess = fork(path.join(__dirname, '../../../index-worker.js'), [ lobbyModel._id, port, owner._id, lobbyModel.playersCount ]);
             try {
                 await AppUtils.doWithFailTimeout<void>(
                     new Promise<void>((resolve, reject) => {

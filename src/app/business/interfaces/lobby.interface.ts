@@ -7,6 +7,7 @@ export interface ILobby extends Document {
 
     name: string;
     serverUrl: string;
+    playersCount: number;
     state: GameState;
     owner: IUser | ObjectId;
 

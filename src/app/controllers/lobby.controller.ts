@@ -1,9 +1,10 @@
 import { Request as ExpressRequest } from 'express';
-import { Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiProduces, ApiResponse } from '@nestjs/swagger';
 import { LobbyService } from '../services/lobby.service';
 import { AuthenticationGuard } from '../middlewares/guards/authentication.guard';
 import { LobbyDTO } from '../dto/responses/lobby.dto';
+import { LobbyInitialDataDTO } from '../dto/requests/lobby-initial-data.dto';
 
 @Controller('lobby')
 @UseGuards(AuthenticationGuard)
@@ -30,8 +31,8 @@ export class LobbyController {
         description: 'Gaming server start failed. Try again later'
     })
     @ApiProduces('LobbyDTO')
-    async createLobby(@Req() req: ExpressRequest): Promise<LobbyDTO> {
-        return this.lobbyService.createLobby(req);
+    async createLobby(@Req() req: ExpressRequest, @Body() initialData?: LobbyInitialDataDTO): Promise<LobbyDTO> {
+        return this.lobbyService.createLobby(req, initialData || new LobbyInitialDataDTO());
     }
 
     @Get('getLobbies')
