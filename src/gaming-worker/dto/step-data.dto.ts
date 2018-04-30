@@ -6,5 +6,6 @@ export default class StepDataDto {
     public id: number; // FIXME it is a player id, review and fix it's lifecycle
     public finalCarProperties: CarPositioningModel = new CarPositioningModel();
     public trajectory: StepTrajectoryModel;
+    public acceleration: number;
 
 }
