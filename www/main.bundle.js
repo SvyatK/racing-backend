@@ -772,6 +772,8 @@ Object(__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dynamic__["a" /* pl
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils_cinematics_utils__ = __webpack_require__("./src/utils/cinematics.utils.ts");
+
 var CarCharacteristicsModel = /** @class */ (function () {
     function CarCharacteristicsModel() {
     }
@@ -797,7 +799,9 @@ var CarCharacteristicsModel = /** @class */ (function () {
         return (this.getEngineForce() - this.getDragForce(velocity) - this.getWheelFrictionForce(velocity)) / this.mass;
     };
     CarCharacteristicsModel.prototype.getMaxDeceleration = function (velocity) {
-        return (this.getBrakingForce() + this.getDragForce(velocity) + this.getWheelFrictionForce(velocity)) / this.mass;
+        // AG: not allowing to go backwards in one move. Maximum deceleration == deceleration to full stop
+        var decelerationToFullStopInOneSecond = -__WEBPACK_IMPORTED_MODULE_0__utils_cinematics_utils__["a" /* CinematicsUtils */].getAccelerationToAchieveSpeed(velocity, 0, 1);
+        return Math.min(decelerationToFullStopInOneSecond, (this.getBrakingForce() + this.getDragForce(velocity) + this.getWheelFrictionForce(velocity)) / this.mass);
     };
     CarCharacteristicsModel.fromDTO = function (carDTO) {
         var output = new CarCharacteristicsModel();
@@ -1128,7 +1132,7 @@ var StepTrajectoryModel = /** @class */ (function () {
         configurable: true
     });
     StepTrajectoryModel.prototype.breakToSegments = function (segsCount) {
-        if (segsCount === void 0) { segsCount = Math.ceil(Math.abs(this.l) / 2); }
+        if (segsCount === void 0) { segsCount = Math.ceil(Math.abs(this.l) * 2); }
         if (this.l === 0) {
             return [new Point()];
         }
@@ -1670,9 +1674,10 @@ var GameplayService = /** @class */ (function () {
     GameplayService.prototype.playAnimations = function (data) {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
-            var startCarPropertiesMap, _i, data_1, stepData, car, animationStartTimestamp;
+            var startCarPropertiesMap, carsToSkipAnimationMap, _i, data_1, stepData, car, animationStartTimestamp;
             return __generator(this, function (_a) {
                 startCarPropertiesMap = new Map();
+                carsToSkipAnimationMap = new Map();
                 for (_i = 0, data_1 = data; _i < data_1.length; _i++) {
                     stepData = data_1[_i];
                     car = this.cars.get(stepData.id);
@@ -1695,23 +1700,38 @@ var GameplayService = /** @class */ (function () {
                             else {
                                 for (var _i = 0, data_2 = data; _i < data_2.length; _i++) {
                                     var stepData = data_2[_i];
+                                    if (carsToSkipAnimationMap.has(stepData.id)) {
+                                        continue;
+                                    }
                                     var car = _this.cars.get(stepData.id);
                                     var startCarProperties = startCarPropertiesMap.get(stepData.id);
                                     if (car && stepData.trajectory && startCarProperties) {
                                         var pastTrajectory = new __WEBPACK_IMPORTED_MODULE_10__models_step_trajectory_model__["a" /* default */](__WEBPACK_IMPORTED_MODULE_12__utils_cinematics_utils__["a" /* CinematicsUtils */].getDistanceInUniformlyAcceleratedMotion(startCarProperties.speed, stepData.acceleration, pastTime), stepData.trajectory.c);
-                                        // position
-                                        var newPositionPolarPoint = pastTrajectory.polarPosition;
-                                        newPositionPolarPoint.theta += startCarProperties.rotation;
-                                        var newPosition = newPositionPolarPoint.cartesianPoint;
-                                        newPosition.x += startCarProperties.position.x;
-                                        newPosition.y += startCarProperties.position.y;
-                                        car.setPosition(newPosition);
-                                        // rotation
-                                        car.setRotation(startCarProperties.rotation + pastTrajectory.pointerRotation);
-                                        // speed
-                                        car.speed = stepData.trajectory.l < 0 ?
-                                            0 :
-                                            __WEBPACK_IMPORTED_MODULE_12__utils_cinematics_utils__["a" /* CinematicsUtils */].getSpeedInUniformlyAcceleratedMotion(startCarProperties.speed, stepData.acceleration, pastTime);
+                                        // if collision happened
+                                        if (Math.abs(pastTrajectory.l) >= Math.abs(stepData.trajectory.l)) {
+                                            carsToSkipAnimationMap.set(stepData.id, true);
+                                            // position
+                                            car.setPosition(stepData.finalCarProperties.position);
+                                            // rotation
+                                            car.setRotation(stepData.finalCarProperties.rotation);
+                                            // speed
+                                            car.speed = stepData.finalCarProperties.speed;
+                                        }
+                                        else {
+                                            // position
+                                            var newPositionPolarPoint = pastTrajectory.polarPosition;
+                                            newPositionPolarPoint.theta += startCarProperties.rotation;
+                                            var newPosition = newPositionPolarPoint.cartesianPoint;
+                                            newPosition.x += startCarProperties.position.x;
+                                            newPosition.y += startCarProperties.position.y;
+                                            car.setPosition(newPosition);
+                                            // rotation
+                                            car.setRotation(startCarProperties.rotation + pastTrajectory.pointerRotation);
+                                            // speed
+                                            car.speed = stepData.trajectory.l < 0 ?
+                                                0 :
+                                                __WEBPACK_IMPORTED_MODULE_12__utils_cinematics_utils__["a" /* CinematicsUtils */].getSpeedInUniformlyAcceleratedMotion(startCarProperties.speed, stepData.acceleration, pastTime);
+                                        }
                                     }
                                 }
                                 _this.controlService.updateCameraDistance();
@@ -1826,6 +1846,10 @@ var GameplayService = /** @class */ (function () {
                                     stepData.finalCarProperties.position.y = collisionPoint.y + Math.sin(fixVectorAngle) * edgeDistance;
                                     if (__WEBPACK_IMPORTED_MODULE_2__utils_geom_utils__["a" /* GeomUtils */].getDistanceBetweenPoints(myCar.getPosition(), stepData.finalCarProperties.position) > 0.01) {
                                         stepData.finalCarProperties.rotation += i * (trajectory.pointerRotation / arcPoints.length);
+                                        stepData.trajectory = new __WEBPACK_IMPORTED_MODULE_10__models_step_trajectory_model__["a" /* default */](trajectory.l * i / arcPoints.length, trajectory.c);
+                                    }
+                                    else {
+                                        stepData.trajectory = new __WEBPACK_IMPORTED_MODULE_10__models_step_trajectory_model__["a" /* default */](0, 0);
                                     }
                                     _this.socketService.nextStep(stepData);
                                     return;
@@ -2710,6 +2734,9 @@ var CinematicsUtils = /** @class */ (function () {
     };
     CinematicsUtils.getSpeedInUniformlyAcceleratedMotionByDistance = function (startVelocity, distance, time) {
         return CinematicsUtils.getSpeedInUniformlyAcceleratedMotion(startVelocity, CinematicsUtils.getAccelerationInUniformlyAcceleratedMotion(startVelocity, distance, time), time);
+    };
+    CinematicsUtils.getAccelerationToAchieveSpeed = function (startVelocity, targetVelocity, time) {
+        return (targetVelocity - startVelocity) / time;
     };
     return CinematicsUtils;
 }());
