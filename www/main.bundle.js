@@ -529,8 +529,8 @@ var Stage_3dComponent = /** @class */ (function () {
         if (!this.camera || !this.car || !this.car.mesh) {
             return;
         }
-        this.camera.position.x = this.car.mesh.position.x + Math.cos(this.car.rotation) * this.car.speed / 2;
-        this.camera.position.y = this.car.mesh.position.y + Math.sin(this.car.rotation) * this.car.speed / 2;
+        this.camera.position.x = this.car.mesh.position.x + Math.cos(this.car.rotation) * Math.max(this.car.speed, 0) / 2;
+        this.camera.position.y = this.car.mesh.position.y + Math.sin(this.car.rotation) * Math.max(this.car.speed, 0) / 2;
         this.camera.position.z = this.cameraDistance;
         if (this.isOrbitControlEnabled) {
             this.camera.position.y -= 0.5;
@@ -825,6 +825,8 @@ var CarCharacteristicsModel = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_rxjs_Rx__ = __webpack_require__("./node_modules/rxjs/_esm5/Rx.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_three__ = __webpack_require__("./node_modules/three/build/three.module.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__car_characteristics_model__ = __webpack_require__("./src/models/car-characteristics.model.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_pixi_js__ = __webpack_require__("./node_modules/pixi.js/lib/index.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_pixi_js__);
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -863,7 +865,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 
 
 
-var Point = PIXI.Point;
+
+var Point = __WEBPACK_IMPORTED_MODULE_3_pixi_js__["Point"];
 var Car = /** @class */ (function () {
     function Car(id, model, characteristics, x, y, rotation, speed) {
         if (x === void 0) { x = 0; }
@@ -1382,7 +1385,7 @@ var ControlService = /** @class */ (function () {
         }); });
     };
     ControlService.prototype.updateCameraDistance = function () {
-        var cameraDistance = Math.max(__WEBPACK_IMPORTED_MODULE_9__utils_cinematics_utils__["a" /* CinematicsUtils */].getDistanceInUniformlyAcceleratedMotion(0, this.car.characteristics.getMaxAcceleration(0), 1) / Math.tan(this.stage3d.fieldOfView * Math.PI / 720), (__WEBPACK_IMPORTED_MODULE_9__utils_cinematics_utils__["a" /* CinematicsUtils */].getDistanceInUniformlyAcceleratedMotion(this.car.speed, this.car.characteristics.getMaxAcceleration(this.car.speed), 1)) / Math.tan(this.stage3d.fieldOfView * Math.PI / 360));
+        var cameraDistance = Math.max(__WEBPACK_IMPORTED_MODULE_9__utils_cinematics_utils__["a" /* CinematicsUtils */].getDistanceInUniformlyAcceleratedMotion(0, this.car.characteristics.getMaxAcceleration(0), 1) / Math.tan(this.stage3d.fieldOfView * Math.PI / 720), (__WEBPACK_IMPORTED_MODULE_9__utils_cinematics_utils__["a" /* CinematicsUtils */].getDistanceInUniformlyAcceleratedMotion(Math.max(this.car.speed, 0), this.car.characteristics.getMaxAcceleration(Math.max(this.car.speed, 0)), 1)) / Math.tan(this.stage3d.fieldOfView * Math.PI / 360));
         if (cameraDistance === this.cameraDistance) {
             return;
         }
@@ -1488,20 +1491,20 @@ var ControlService = /** @class */ (function () {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return GameplayService; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_pixi_js__ = __webpack_require__("./node_modules/pixi.js/lib/index.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_pixi_js___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_pixi_js__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__models_car_model__ = __webpack_require__("./src/models/car.model.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils_geom_utils__ = __webpack_require__("./src/utils/geom.utils.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_http__ = __webpack_require__("./node_modules/@angular/http/esm5/http.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__socket_service__ = __webpack_require__("./src/services/socket.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__login_service__ = __webpack_require__("./src/services/login.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__model_loader_service__ = __webpack_require__("./src/services/model-loader.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__car_service__ = __webpack_require__("./src/services/car.service.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__utils_app_utils__ = __webpack_require__("./src/utils/app.utils.ts");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__control_service__ = __webpack_require__("./src/services/control.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__models_car_model__ = __webpack_require__("./src/models/car.model.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils_geom_utils__ = __webpack_require__("./src/utils/geom.utils.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_http__ = __webpack_require__("./node_modules/@angular/http/esm5/http.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__socket_service__ = __webpack_require__("./src/services/socket.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__login_service__ = __webpack_require__("./src/services/login.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__model_loader_service__ = __webpack_require__("./src/services/model-loader.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__car_service__ = __webpack_require__("./src/services/car.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__utils_app_utils__ = __webpack_require__("./src/utils/app.utils.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__control_service__ = __webpack_require__("./src/services/control.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__models_step_trajectory_model__ = __webpack_require__("./src/models/step-trajectory.model.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__models_car_characteristics_model__ = __webpack_require__("./src/models/car-characteristics.model.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__utils_cinematics_utils__ = __webpack_require__("./src/utils/cinematics.utils.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__consts_app_consts__ = __webpack_require__("./src/consts/app.consts.ts");
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1559,7 +1562,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 
 
 
-var Point = __WEBPACK_IMPORTED_MODULE_0_pixi_js__["Point"];
+
 var GameplayService = /** @class */ (function () {
     function GameplayService(http, 
     // private canvasService: CanvasService,
@@ -1612,11 +1615,11 @@ var GameplayService = /** @class */ (function () {
                         this.controlService.initControls(this.stage3d, myCar);
                         this.mapPolygon = mapData.polygon;
                         this.checkpoints = mapData.checkpoints;
-                        return [4 /*yield*/, __WEBPACK_IMPORTED_MODULE_9__utils_app_utils__["a" /* default */].wait(1500)];
+                        return [4 /*yield*/, __WEBPACK_IMPORTED_MODULE_8__utils_app_utils__["a" /* default */].wait(1500)];
                     case 4:
                         _a.sent();
                         this.isLoadingMap = false;
-                        return [4 /*yield*/, __WEBPACK_IMPORTED_MODULE_9__utils_app_utils__["a" /* default */].wait(1500)];
+                        return [4 /*yield*/, __WEBPACK_IMPORTED_MODULE_8__utils_app_utils__["a" /* default */].wait(1500)];
                     case 5:
                         _a.sent();
                         return [2 /*return*/];
@@ -1628,7 +1631,13 @@ var GameplayService = /** @class */ (function () {
         return __awaiter(this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
-                this.socketService.stepSubject.subscribe(function (data) { return _this.startNewIteration(data); });
+                // TODO fix serialization here
+                this.socketService.stepSubject.subscribe(function (data) { return _this.onStepComplete(data.map(function (item) {
+                    if (item.trajectory) {
+                        item.trajectory = new __WEBPACK_IMPORTED_MODULE_10__models_step_trajectory_model__["a" /* default */](item.trajectory.l, item.trajectory.c);
+                    }
+                    return item;
+                })); });
                 this.socketService.readyToStart({
                     id: this.myCarId,
                     name: this.loginService.currentUser.login
@@ -1637,14 +1646,88 @@ var GameplayService = /** @class */ (function () {
             });
         });
     };
-    GameplayService.prototype.startNewIteration = function (data) {
+    GameplayService.prototype.onStepComplete = function (data) {
         return __awaiter(this, void 0, void 0, function () {
-            var _this = this;
-            var _i, data_1, carPositioning, car, myCar, minRadius, maxRadius, currentSpeed, maxSteeringCurvature;
+            var isPlayAnimation;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         this.stepsCount++;
+                        isPlayAnimation = this.stepsCount > 1;
+                        if (!isPlayAnimation) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.playAnimations(data)];
+                    case 1:
+                        _a.sent();
+                        _a.label = 2;
+                    case 2:
+                        this.startNewIteration(data)
+                            .then();
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    GameplayService.prototype.playAnimations = function (data) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            var startCarPropertiesMap, _i, data_1, stepData, car, animationStartTimestamp;
+            return __generator(this, function (_a) {
+                startCarPropertiesMap = new Map();
+                for (_i = 0, data_1 = data; _i < data_1.length; _i++) {
+                    stepData = data_1[_i];
+                    car = this.cars.get(stepData.id);
+                    if (car && stepData.trajectory) {
+                        startCarPropertiesMap.set(stepData.id, {
+                            rotation: car.rotation,
+                            position: car.getPosition(),
+                            speed: car.speed
+                        });
+                    }
+                }
+                animationStartTimestamp = new Date().getTime();
+                return [2 /*return*/, new Promise(function (resolve) {
+                        var animateInterval = setInterval(function () {
+                            var pastTime = (new Date().getTime() - animationStartTimestamp) / 1000;
+                            if (pastTime >= 1) {
+                                clearInterval(animateInterval);
+                                resolve();
+                            }
+                            else {
+                                for (var _i = 0, data_2 = data; _i < data_2.length; _i++) {
+                                    var stepData = data_2[_i];
+                                    var car = _this.cars.get(stepData.id);
+                                    var startCarProperties = startCarPropertiesMap.get(stepData.id);
+                                    if (car && stepData.trajectory && startCarProperties) {
+                                        var pastTrajectory = new __WEBPACK_IMPORTED_MODULE_10__models_step_trajectory_model__["a" /* default */](__WEBPACK_IMPORTED_MODULE_12__utils_cinematics_utils__["a" /* CinematicsUtils */].getDistanceInUniformlyAcceleratedMotion(startCarProperties.speed, stepData.acceleration, pastTime), stepData.trajectory.c);
+                                        // position
+                                        var newPositionPolarPoint = pastTrajectory.polarPosition;
+                                        newPositionPolarPoint.theta += startCarProperties.rotation;
+                                        var newPosition = newPositionPolarPoint.cartesianPoint;
+                                        newPosition.x += startCarProperties.position.x;
+                                        newPosition.y += startCarProperties.position.y;
+                                        car.setPosition(newPosition);
+                                        // rotation
+                                        car.setRotation(startCarProperties.rotation + pastTrajectory.pointerRotation);
+                                        // speed
+                                        car.speed = stepData.trajectory.l < 0 ?
+                                            0 :
+                                            __WEBPACK_IMPORTED_MODULE_12__utils_cinematics_utils__["a" /* CinematicsUtils */].getSpeedInUniformlyAcceleratedMotion(startCarProperties.speed, stepData.acceleration, pastTime);
+                                    }
+                                }
+                                _this.controlService.updateCameraDistance();
+                            }
+                        }, 1000 / __WEBPACK_IMPORTED_MODULE_13__consts_app_consts__["a" /* default */].FPS);
+                    })];
+            });
+        });
+    };
+    GameplayService.prototype.startNewIteration = function (data) {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            var _i, data_3, stepData, car, myCar, minRadius, maxRadius, currentSpeed, maxSteeringCurvature;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
                         if ((!this.myCarId && this.myCarId !== 0) || !this.cars.get(this.myCarId)) {
                             console.log('Don\'t have "myCar" for arc functionality :(');
                             return [2 /*return*/];
@@ -1652,24 +1735,24 @@ var GameplayService = /** @class */ (function () {
                         if (this.isWaitingPlayers) {
                             this.isWaitingPlayers = false;
                         }
-                        _i = 0, data_1 = data;
+                        _i = 0, data_3 = data;
                         _a.label = 1;
                     case 1:
-                        if (!(_i < data_1.length)) return [3 /*break*/, 5];
-                        carPositioning = data_1[_i];
-                        car = this.cars.get(carPositioning.id);
+                        if (!(_i < data_3.length)) return [3 /*break*/, 5];
+                        stepData = data_3[_i];
+                        car = this.cars.get(stepData.id);
                         if (!!car) return [3 /*break*/, 3];
-                        car = new __WEBPACK_IMPORTED_MODULE_2__models_car_model__["a" /* default */](carPositioning.id, 'lambo', new __WEBPACK_IMPORTED_MODULE_11__models_car_characteristics_model__["a" /* default */](), carPositioning.x, carPositioning.y, carPositioning.rotation, 0);
+                        car = new __WEBPACK_IMPORTED_MODULE_1__models_car_model__["a" /* default */](stepData.id, 'lambo', new __WEBPACK_IMPORTED_MODULE_11__models_car_characteristics_model__["a" /* default */](), stepData.finalCarProperties.position.x, stepData.finalCarProperties.position.y, stepData.finalCarProperties.rotation, stepData.finalCarProperties.speed);
                         return [4 /*yield*/, car.initMesh(this.modelLoaderService, true)];
                     case 2:
                         _a.sent();
                         this.stage3d.addCar(car);
                         this.cars.set(car.id, car);
-                        _a.label = 3;
+                        return [3 /*break*/, 4];
                     case 3:
-                        car.setPosition(new Point(carPositioning.x, carPositioning.y));
-                        car.setRotation(carPositioning.rotation);
-                        car.speed = carPositioning.speed;
+                        car.setPosition(stepData.finalCarProperties.position);
+                        car.setRotation(stepData.finalCarProperties.rotation);
+                        car.speed = stepData.finalCarProperties.speed;
                         _a.label = 4;
                     case 4:
                         _i++;
@@ -1700,7 +1783,7 @@ var GameplayService = /** @class */ (function () {
                         }
                         this.controlService.updateCameraDistance();
                         // FIXME gold hammer (controls are updating bad without it)
-                        return [4 /*yield*/, __WEBPACK_IMPORTED_MODULE_9__utils_app_utils__["a" /* default */].sleep(50)];
+                        return [4 /*yield*/, __WEBPACK_IMPORTED_MODULE_8__utils_app_utils__["a" /* default */].sleep(50)];
                     case 6:
                         // FIXME gold hammer (controls are updating bad without it)
                         _a.sent();
@@ -1711,17 +1794,20 @@ var GameplayService = /** @class */ (function () {
                             var newPosition = newPositionPolarPoint.cartesianPoint;
                             newPosition.x += myCar.x;
                             newPosition.y += myCar.y;
-                            var newPositioningProperties = {
+                            var stepData = {
                                 id: myCar.id,
-                                x: myCar.x,
-                                y: myCar.y,
-                                rotation: myCar.rotation,
-                                speed: myCar.speed
+                                finalCarProperties: {
+                                    position: myCar.getPosition(),
+                                    rotation: myCar.rotation,
+                                    speed: myCar.speed
+                                },
+                                trajectory: trajectory,
+                                acceleration: __WEBPACK_IMPORTED_MODULE_12__utils_cinematics_utils__["a" /* CinematicsUtils */].getAccelerationInUniformlyAcceleratedMotion(myCar.speed, trajectory.l, 1)
                             };
                             var arcPoints = trajectory.breakToSegments()
                                 .map(function (arcLocalPoint) {
                                 // TODO optimize. use matrix translations
-                                var polar = __WEBPACK_IMPORTED_MODULE_3__utils_geom_utils__["b" /* PolarPoint */].fromCartesian(arcLocalPoint);
+                                var polar = __WEBPACK_IMPORTED_MODULE_2__utils_geom_utils__["b" /* PolarPoint */].fromCartesian(arcLocalPoint);
                                 polar.theta += myCar.rotation;
                                 arcLocalPoint = polar.cartesianPoint;
                                 arcLocalPoint.x += myCar.x;
@@ -1733,18 +1819,18 @@ var GameplayService = /** @class */ (function () {
                                 if (!_this.mapPolygon.isContainingPoint(trajectoryPoint)) {
                                     var collisionPoint = _this.mapPolygon.getLinePolygonIntersection(i > 0 ? arcPoints[i - 1] : myCar.getPosition(), arcPoints[i]);
                                     // new position is not an intersection point. It is slightly (10 cm) on the track.
-                                    var edgeDistance = Math.min(0.1, __WEBPACK_IMPORTED_MODULE_3__utils_geom_utils__["a" /* GeomUtils */].getDistanceBetweenPoints(myCar.getPosition(), collisionPoint));
-                                    var fixVectorAngle = __WEBPACK_IMPORTED_MODULE_3__utils_geom_utils__["a" /* GeomUtils */].getAngleBetweenPoints(collisionPoint, myCar.getPosition());
-                                    newPositioningProperties.speed = 0;
-                                    newPositioningProperties.x = collisionPoint.x + Math.cos(fixVectorAngle) * edgeDistance;
-                                    newPositioningProperties.y = collisionPoint.y + Math.sin(fixVectorAngle) * edgeDistance;
-                                    if (__WEBPACK_IMPORTED_MODULE_3__utils_geom_utils__["a" /* GeomUtils */].getDistanceBetweenPoints(myCar.getPosition(), new Point(newPositioningProperties.x, newPositioningProperties.y)) > 0.01) {
-                                        newPositioningProperties.rotation += i * (trajectory.pointerRotation / arcPoints.length);
+                                    var edgeDistance = Math.min(0.1, __WEBPACK_IMPORTED_MODULE_2__utils_geom_utils__["a" /* GeomUtils */].getDistanceBetweenPoints(myCar.getPosition(), collisionPoint));
+                                    var fixVectorAngle = __WEBPACK_IMPORTED_MODULE_2__utils_geom_utils__["a" /* GeomUtils */].getAngleBetweenPoints(collisionPoint, myCar.getPosition());
+                                    stepData.finalCarProperties.speed = 0;
+                                    stepData.finalCarProperties.position.x = collisionPoint.x + Math.cos(fixVectorAngle) * edgeDistance;
+                                    stepData.finalCarProperties.position.y = collisionPoint.y + Math.sin(fixVectorAngle) * edgeDistance;
+                                    if (__WEBPACK_IMPORTED_MODULE_2__utils_geom_utils__["a" /* GeomUtils */].getDistanceBetweenPoints(myCar.getPosition(), stepData.finalCarProperties.position) > 0.01) {
+                                        stepData.finalCarProperties.rotation += i * (trajectory.pointerRotation / arcPoints.length);
                                     }
-                                    _this.socketService.nextStep(newPositioningProperties);
+                                    _this.socketService.nextStep(stepData);
                                     return;
                                 }
-                                if (_this.checkpoints && _this.checkpoints.length > 0 && __WEBPACK_IMPORTED_MODULE_3__utils_geom_utils__["a" /* GeomUtils */].getDistanceBetweenPoints(trajectoryPoint, _this.checkpoints[0].getPosition()) < _this.checkpoints[0].radius) {
+                                if (_this.checkpoints && _this.checkpoints.length > 0 && __WEBPACK_IMPORTED_MODULE_2__utils_geom_utils__["a" /* GeomUtils */].getDistanceBetweenPoints(trajectoryPoint, _this.checkpoints[0].getPosition()) < _this.checkpoints[0].radius) {
                                     _this.checkpoints.shift();
                                     if (_this.checkpoints.length == 0) {
                                         _this.socketService.finished(_this.stepsCount);
@@ -1752,11 +1838,10 @@ var GameplayService = /** @class */ (function () {
                                     }
                                 }
                             }
-                            newPositioningProperties.speed = Math.max(0, __WEBPACK_IMPORTED_MODULE_12__utils_cinematics_utils__["a" /* CinematicsUtils */].getSpeedInUniformlyAcceleratedMotionByDistance(myCar.speed, trajectory.l, 1));
-                            newPositioningProperties.rotation += trajectory.pointerRotation;
-                            newPositioningProperties.x = newPosition.x;
-                            newPositioningProperties.y = newPosition.y;
-                            _this.socketService.nextStep(newPositioningProperties);
+                            stepData.finalCarProperties.speed = Math.max(0, __WEBPACK_IMPORTED_MODULE_12__utils_cinematics_utils__["a" /* CinematicsUtils */].getSpeedInUniformlyAcceleratedMotionByDistance(myCar.speed, trajectory.l, 1));
+                            stepData.finalCarProperties.rotation += trajectory.pointerRotation;
+                            stepData.finalCarProperties.position = newPosition;
+                            _this.socketService.nextStep(stepData);
                         });
                         return [2 /*return*/];
                 }
@@ -1772,14 +1857,14 @@ var GameplayService = /** @class */ (function () {
         return __WEBPACK_IMPORTED_MODULE_12__utils_cinematics_utils__["a" /* CinematicsUtils */].getDistanceInUniformlyAcceleratedMotion(velocity, car.characteristics.getMaxAcceleration(velocity), 1);
     };
     GameplayService = __decorate([
-        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["A" /* Injectable */])(),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_4__angular_http__["c" /* Http */],
-            __WEBPACK_IMPORTED_MODULE_5__socket_service__["a" /* SocketService */],
-            __WEBPACK_IMPORTED_MODULE_6__login_service__["a" /* LoginService */],
-            __WEBPACK_IMPORTED_MODULE_8__car_service__["a" /* CarService */],
-            __WEBPACK_IMPORTED_MODULE_1__angular_core__["N" /* NgZone */],
-            __WEBPACK_IMPORTED_MODULE_7__model_loader_service__["a" /* ModelLoaderService */],
-            __WEBPACK_IMPORTED_MODULE_10__control_service__["a" /* ControlService */]])
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["A" /* Injectable */])(),
+        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_3__angular_http__["c" /* Http */],
+            __WEBPACK_IMPORTED_MODULE_4__socket_service__["a" /* SocketService */],
+            __WEBPACK_IMPORTED_MODULE_5__login_service__["a" /* LoginService */],
+            __WEBPACK_IMPORTED_MODULE_7__car_service__["a" /* CarService */],
+            __WEBPACK_IMPORTED_MODULE_0__angular_core__["N" /* NgZone */],
+            __WEBPACK_IMPORTED_MODULE_6__model_loader_service__["a" /* ModelLoaderService */],
+            __WEBPACK_IMPORTED_MODULE_9__control_service__["a" /* ControlService */]])
     ], GameplayService);
     return GameplayService;
 }());
@@ -2620,8 +2705,11 @@ var CinematicsUtils = /** @class */ (function () {
     CinematicsUtils.getAccelerationInUniformlyAcceleratedMotion = function (startVelocity, distance, time) {
         return (2 / Math.pow(time, 2)) * (distance - startVelocity * time);
     };
+    CinematicsUtils.getSpeedInUniformlyAcceleratedMotion = function (startVelocity, acceleration, time) {
+        return startVelocity + acceleration * time;
+    };
     CinematicsUtils.getSpeedInUniformlyAcceleratedMotionByDistance = function (startVelocity, distance, time) {
-        return startVelocity + CinematicsUtils.getAccelerationInUniformlyAcceleratedMotion(startVelocity, distance, time) * time;
+        return CinematicsUtils.getSpeedInUniformlyAcceleratedMotion(startVelocity, CinematicsUtils.getAccelerationInUniformlyAcceleratedMotion(startVelocity, distance, time), time);
     };
     return CinematicsUtils;
 }());
