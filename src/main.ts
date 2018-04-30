@@ -28,8 +28,8 @@ async function bootstrap() {
         .build();
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup('/api', app, document);
-    expressInstance.get('*', (req, res) => res.sendFile(path.join(__dirname, '../www', 'index.html')));
     await app.listen(APP_CONFIG.server.port);
+    expressInstance.get('*', (req, res) => res.sendFile(path.join(__dirname, '../www', 'index.html')));
 }
 
 bootstrap();
