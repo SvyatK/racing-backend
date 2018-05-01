@@ -487,6 +487,7 @@ var Stage_3dComponent = /** @class */ (function () {
         var _this = this;
         this.controlService = controlService;
         this.isOrbitControlEnabled = false;
+        this.renderWorldLoopEnabled = false;
         this.fieldOfView = 45;
         this.nearClippingPane = 1;
         this.farClippingPane = 10000;
@@ -559,6 +560,10 @@ var Stage_3dComponent = /** @class */ (function () {
         if (this.isOrbitControlEnabled && this.orbitControls) {
             this.orbitControls.update();
         }
+        if (!this.renderWorldLoopEnabled) {
+            this.renderWorldOnce();
+        }
+        this.renderControlsOnce();
     };
     Stage_3dComponent.prototype.addCar = function (car, track) {
         if (track === void 0) { track = false; }
@@ -661,31 +666,56 @@ var Stage_3dComponent = /** @class */ (function () {
         this.controlRenderer.setPixelRatio(devicePixelRatio);
         this.controlRenderer.setSize(this.controlCanvas.width, this.controlCanvas.height);
     };
-    Stage_3dComponent.prototype.startRenderingLoop = function () {
-        var component = this;
-        (function render() {
-            return __awaiter(this, void 0, void 0, function () {
-                return __generator(this, function (_a) {
-                    component.animateCamera();
-                    component.controlService.adjustControlPositions();
-                    component.water.material.uniforms.time.value += 1.0 / 60.0;
-                    component.worldRenderer.clear();
-                    component.worldRenderer.render(component.scene, component.camera);
-                    component.controlRenderer.clear();
-                    component.controlRenderer.render(component.controlScene, component.camera);
-                    requestAnimationFrame(render);
-                    return [2 /*return*/];
-                });
-            });
-        }());
-    };
     Stage_3dComponent.prototype.ngAfterViewInit = function () {
         this.resizeCanvas(window.innerWidth, window.innerHeight);
         this.initCanvases();
-        this.startRenderingLoop();
     };
     Stage_3dComponent.prototype.ngOnInit = function () {
         this.createScene();
+    };
+    Stage_3dComponent.prototype.renderWorldOnce = function () {
+        requestAnimationFrame(this._renderWorldSceneRoutine.bind(this));
+    };
+    Stage_3dComponent.prototype.startWorldRenderingLoop = function () {
+        this.renderWorldLoopEnabled = true;
+        // triggering first render tick
+        this.renderWorldOnce();
+    };
+    Stage_3dComponent.prototype.stopWorldRenderingLoop = function () {
+        this.renderWorldLoopEnabled = false;
+        // rendering loop will be stopped after next tick
+    };
+    Stage_3dComponent.prototype.renderControlsOnce = function () {
+        requestAnimationFrame(this._renderControlSceneRoutine.bind(this));
+    };
+    Stage_3dComponent.prototype.renderControlsOnceSync = function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var _this = this;
+            return __generator(this, function (_a) {
+                // FIXME do it with onAfterRender hook
+                return [2 /*return*/, new Promise(function (resolve) {
+                        requestAnimationFrame(function () {
+                            _this._renderControlSceneRoutine.bind(_this)();
+                            resolve();
+                        });
+                    })];
+            });
+        });
+    };
+    Stage_3dComponent.prototype._renderWorldSceneRoutine = function () {
+        // FIXME these 2 statements are beforeRender hooks
+        this.animateCamera();
+        // TODO use race time here;
+        this.water.material.uniforms.time.value += 1.0 / 60.0;
+        this.worldRenderer.clear();
+        this.worldRenderer.render(this.scene, this.camera);
+        if (this.renderWorldLoopEnabled) {
+            requestAnimationFrame(this._renderWorldSceneRoutine.bind(this));
+        }
+    };
+    Stage_3dComponent.prototype._renderControlSceneRoutine = function () {
+        this.controlRenderer.clear();
+        this.controlRenderer.render(this.controlScene, this.camera);
     };
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["D" /* Input */])(),
@@ -721,9 +751,9 @@ var Stage_3dComponent = /** @class */ (function () {
 var AppConsts = /** @class */ (function () {
     function AppConsts() {
     }
-    AppConsts.BACKEND_URL = 'https://racing-demo-dev.pp.ua';
+    AppConsts.BACKEND_URL = 'http://localhost:3000';
     AppConsts.FPS = 60;
-    AppConsts.MOVE_TIMEOUT = 5000;
+    AppConsts.MOVE_TIMEOUT = 7000;
     return AppConsts;
 }());
 /* harmony default export */ __webpack_exports__["a"] = (AppConsts);
@@ -1359,32 +1389,40 @@ var ControlService = /** @class */ (function () {
             var _this = this;
             var clickSubscription, safeTimeout;
             return __generator(this, function (_a) {
-                this.currentStepMinDistance = minDistance;
-                this.currentStepMaxDistance = maxDistance;
-                this.currentStepMomentumDistance = momentumDistance;
-                this.currentStepMaxCurvature = maxSteeringCurvature;
-                this.isInSelectionState = true;
-                this.updateTrajectorySelector();
-                this.showStepArea();
-                clickSubscription = this.trajectorySelected.asObservable()
-                    .subscribe(function (traj) {
-                    clearTimeout(safeTimeout);
-                    clickSubscription.unsubscribe();
-                    _this.isInSelectionState = false;
-                    _this.controlSphere.visible = false;
-                    _this.hideStepArea();
-                    _this.hideStepCurve();
-                    resolve(traj);
-                });
-                safeTimeout = setTimeout(function () {
-                    clickSubscription.unsubscribe();
-                    _this.isInSelectionState = false;
-                    _this.controlSphere.visible = false;
-                    _this.hideStepArea();
-                    _this.hideStepCurve();
-                    resolve(new __WEBPACK_IMPORTED_MODULE_5__models_step_trajectory_model__["a" /* default */](Math.max(minDistance, 0), 0)); // Math.max to not go backwards
-                }, __WEBPACK_IMPORTED_MODULE_8__consts_app_consts__["a" /* default */].MOVE_TIMEOUT);
-                return [2 /*return*/];
+                switch (_a.label) {
+                    case 0:
+                        this.currentStepMinDistance = minDistance;
+                        this.currentStepMaxDistance = maxDistance;
+                        this.currentStepMomentumDistance = momentumDistance;
+                        this.currentStepMaxCurvature = maxSteeringCurvature;
+                        this.isInSelectionState = true;
+                        // AG: can't make ray casting in updateTrajectorySelector before fresh scene rendered.
+                        // Don't do sync rendering in updateTrajectorySelector because control changes only here or on camera position change
+                        return [4 /*yield*/, this.stage3d.renderControlsOnceSync()];
+                    case 1:
+                        // AG: can't make ray casting in updateTrajectorySelector before fresh scene rendered.
+                        // Don't do sync rendering in updateTrajectorySelector because control changes only here or on camera position change
+                        _a.sent();
+                        this.showStepArea();
+                        this.updateTrajectorySelector();
+                        clickSubscription = this.trajectorySelected.asObservable()
+                            .subscribe(function (traj) {
+                            clearTimeout(safeTimeout);
+                            clickSubscription.unsubscribe();
+                            _this.isInSelectionState = false;
+                            _this.controlSphere.visible = false;
+                            _this.hideStepAreaAndCurve();
+                            resolve(traj);
+                        });
+                        safeTimeout = setTimeout(function () {
+                            clickSubscription.unsubscribe();
+                            _this.isInSelectionState = false;
+                            _this.controlSphere.visible = false;
+                            _this.hideStepAreaAndCurve();
+                            resolve(new __WEBPACK_IMPORTED_MODULE_5__models_step_trajectory_model__["a" /* default */](Math.max(minDistance, 0), 0)); // Math.max to not go backwards
+                        }, __WEBPACK_IMPORTED_MODULE_8__consts_app_consts__["a" /* default */].MOVE_TIMEOUT);
+                        return [2 /*return*/];
+                }
             });
         }); });
     };
@@ -1398,7 +1436,9 @@ var ControlService = /** @class */ (function () {
         this.controlPlane.geometry.applyMatrix(new __WEBPACK_IMPORTED_MODULE_1_three__["Matrix4"]().makeTranslation(this.controlPlaneLength * (0.5 - this.nextStepArc.relativeCarOffset), 0, 0));
         this.nextStepArea.pixelsInUnit = 1024 / this.controlPlaneLength;
         this.nextStepArc.pixelsInUnit = 1024 / this.controlPlaneLength;
-        this.updateControlPlaneTexture();
+        if (this.nextStepArc.visible || this.nextStepArea.visible) {
+            this.updateControlPlaneTexture();
+        }
         this.cameraDistanceSubject.next(this.cameraDistance);
     };
     ControlService.prototype.onCanvasMouseMove = function (event) {
@@ -1458,11 +1498,18 @@ var ControlService = /** @class */ (function () {
         this.nextStepArc.visible = true;
         this.updateControlPlaneTexture();
     };
-    ControlService.prototype.hideStepArea = function () {
+    ControlService.prototype.hideStepAreaAndCurve = function () {
+        var needToRender = this.nextStepArea.visible || this.nextStepArc.visible;
+        if (!needToRender) {
+            return;
+        }
         if (this.nextStepArea.visible) {
             this.nextStepArea.visible = false;
-            this.updateControlPlaneTexture();
         }
+        if (this.nextStepArc.visible) {
+            this.nextStepArc.visible = false;
+        }
+        this.updateControlPlaneTexture();
     };
     ControlService.prototype.hideStepCurve = function () {
         if (this.nextStepArc.visible) {
@@ -1473,6 +1520,7 @@ var ControlService = /** @class */ (function () {
     ControlService.prototype.updateControlPlaneTexture = function () {
         this.controlPlaneTextureRenderer.render(this.controlPlaneTextureStage);
         this.controlPlaneTexture.needsUpdate = true;
+        this.stage3d.renderControlsOnce();
     };
     // x going forward, y to the left.
     // at car position it's (0, 0.5) for uv and (0, 0) in world
@@ -1659,9 +1707,11 @@ var GameplayService = /** @class */ (function () {
                         this.stepsCount++;
                         isPlayAnimation = this.stepsCount > 1;
                         if (!isPlayAnimation) return [3 /*break*/, 2];
+                        this.stage3d.startWorldRenderingLoop();
                         return [4 /*yield*/, this.playAnimations(data)];
                     case 1:
                         _a.sent();
+                        this.stage3d.stopWorldRenderingLoop();
                         _a.label = 2;
                     case 2:
                         this.startNewIteration(data)
@@ -1801,12 +1851,9 @@ var GameplayService = /** @class */ (function () {
                         if (Math.abs(currentSpeed) < 0.25) {
                             minRadius = -maxRadius + Math.abs(currentSpeed);
                         }
+                        this.stage3d.renderWorldOnce();
                         this.controlService.updateCameraDistance();
-                        // FIXME gold hammer (controls are updating bad without it)
-                        return [4 /*yield*/, __WEBPACK_IMPORTED_MODULE_8__utils_app_utils__["a" /* default */].sleep(50)];
-                    case 6:
-                        // FIXME gold hammer (controls are updating bad without it)
-                        _a.sent();
+                        this.controlService.adjustControlPositions();
                         this.controlService.askForSelectedPosition(minRadius, maxRadius, currentSpeed, maxSteeringCurvature)
                             .then(function (trajectory) {
                             var newPositionPolarPoint = trajectory.polarPosition;
