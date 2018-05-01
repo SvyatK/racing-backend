@@ -751,7 +751,7 @@ var Stage_3dComponent = /** @class */ (function () {
 var AppConsts = /** @class */ (function () {
     function AppConsts() {
     }
-    AppConsts.BACKEND_URL = 'http://localhost:3000';
+    AppConsts.BACKEND_URL = 'https://racing-demo-dev.pp.ua';
     AppConsts.FPS = 60;
     AppConsts.MOVE_TIMEOUT = 7000;
     return AppConsts;
