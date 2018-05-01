@@ -6,6 +6,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { APP_CONFIG } from './app/conf/config';
 import { NestApplicationOptions } from '@nestjs/common/interfaces/nest-application-options.interface';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
     console.log(`Starting app. Environment: ${APP_CONFIG.env}`);
@@ -20,6 +21,7 @@ async function bootstrap() {
     const expressInstance: express.Express = express();
     expressInstance.use(express.static(path.join(__dirname, '../www')));
     const app = await NestFactory.create(ApplicationModule, expressInstance, appOptions);
+    app.useGlobalPipes(new ValidationPipe());
     const options = new DocumentBuilder()
         .setTitle('Racing Backend')
         .setDescription('The racing backend API description')

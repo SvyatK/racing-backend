@@ -19,6 +19,10 @@ export class LobbyController {
         description: 'Lobby created'
     })
     @ApiResponse({
+        status: 400,
+        description: 'Data validation error'
+    })
+    @ApiResponse({
         status: 401,
         description: 'Please login first'
     })
@@ -32,7 +36,7 @@ export class LobbyController {
     })
     @ApiProduces('LobbyDTO')
     async createLobby(@Req() req: ExpressRequest, @Body() initialData?: LobbyInitialDataDTO): Promise<LobbyDTO> {
-        return this.lobbyService.createLobby(req, initialData || new LobbyInitialDataDTO());
+        return this.lobbyService.createLobby(req, (initialData && initialData.playersCount) ? initialData : new LobbyInitialDataDTO());
     }
 
     @Get('getLobbies')
