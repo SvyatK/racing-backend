@@ -55,6 +55,7 @@ export class LobbyService {
             throw new HttpException('Server overloaded. Try again later', HttpStatus.NOT_ACCEPTABLE);
         }
         lobbyModel.serverUrl = `::${port}`;
+        lobbyModel.playersCount = initialData.playersCount;
         await lobbyModel.save();
         let gamingProcess: ChildProcess;
         try {
