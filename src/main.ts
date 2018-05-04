@@ -7,6 +7,7 @@ import * as fs from 'fs';
 import { APP_CONFIG } from './app/conf/config';
 import { NestApplicationOptions } from '@nestjs/common/interfaces/nest-application-options.interface';
 import { ValidationPipe } from '@nestjs/common';
+import { NotFoundExceptionFilter } from './app/middlewares/filters/not-found-exception.filter';
 
 async function bootstrap() {
     console.log(`Starting app. Environment: ${APP_CONFIG.env}`);
@@ -22,6 +23,7 @@ async function bootstrap() {
     expressInstance.use(express.static(path.join(__dirname, '../www')));
     const app = await NestFactory.create(ApplicationModule, expressInstance, appOptions);
     app.useGlobalPipes(new ValidationPipe());
+    app.useGlobalFilters(new NotFoundExceptionFilter());
     const options = new DocumentBuilder()
         .setTitle('Racing Backend')
         .setDescription('The racing backend API description')
@@ -30,7 +32,6 @@ async function bootstrap() {
         .build();
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup('/api', app, document);
-    expressInstance.get('/login', (req, res) => res.sendFile(path.join(__dirname, '../www', 'index.html')));
     await app.listen(APP_CONFIG.server.port);
 }
 
