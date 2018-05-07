@@ -2,7 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { ApplicationModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as express from 'express';
-import * as path from 'path';
 import * as fs from 'fs';
 import { APP_CONFIG } from './app/conf/config';
 import { NestApplicationOptions } from '@nestjs/common/interfaces/nest-application-options.interface';
@@ -19,9 +18,7 @@ async function bootstrap() {
             ca: fs.readFileSync(APP_CONFIG.server.ssl.ca)
         };
     }
-    const expressInstance: express.Express = express();
-    expressInstance.use(express.static(path.join(__dirname, '../www')));
-    const app = await NestFactory.create(ApplicationModule, expressInstance, appOptions);
+    const app = await NestFactory.create(ApplicationModule, express(), appOptions);
     app.useGlobalPipes(new ValidationPipe());
     app.useGlobalFilters(new NotFoundExceptionFilter());
     const options = new DocumentBuilder()

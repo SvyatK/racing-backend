@@ -9,6 +9,7 @@
     "start:prod": "NODE_ENV=production node dist/main.js"
   },
   "dependencies": {
+    "@nest-middlewares/serve-static": "^1.1.1",
     "@nestjs/common": "^4.5.9",
     "@nestjs/core": "^4.5.10",
     "@nestjs/microservices": "^4.5.8",

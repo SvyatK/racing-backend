@@ -9,6 +9,7 @@ import { AuthController } from './app/controllers/auth.controller';
 import { LobbyService } from './app/services/lobby.service';
 import { LobbyController } from './app/controllers/lobby.controller';
 import { GamingServersManager } from './app/managers/gaming-servers.manager';
+import { ServeStaticMiddleware } from '@nest-middlewares/serve-static';
 
 @Module({
     imports: [],
@@ -35,6 +36,12 @@ export class ApplicationModule {
                     method: RequestMethod.ALL
                 });
         consumer.apply(SessionMiddleware)
+                .forRoutes({
+                    path: '*',
+                    method: RequestMethod.ALL
+                });
+        ServeStaticMiddleware.configure('www');
+        consumer.apply(ServeStaticMiddleware)
                 .forRoutes({
                     path: '*',
                     method: RequestMethod.ALL

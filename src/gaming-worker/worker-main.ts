@@ -17,8 +17,7 @@ async function bootstrap() {
             ca: fs.readFileSync(APP_CONFIG.server.ssl.ca)
         };
     }
-    const expressInstance: express.Express = express();
-    const app: NestApplication = await NestFactory.create(WorkerModule, expressInstance, appOptions);
+    const app: NestApplication = await NestFactory.create(WorkerModule, express(), appOptions);
     await app.listen(GamingWorkerEnvironment.PORT);
 
     const gamingServerMainService: GamingServerMainService = app.get('GamingServerMainService');
