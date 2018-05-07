@@ -73,7 +73,7 @@ export class GameplayService {
     // TODO data type
     async playerReadyToStart(io: SocketIO.Server, socket: SocketIO.Socket, data: any): Promise<void> {
         console.log(`${socket.id} ready to start`);
-        const positionIndex: number = this.countReadyToStartPlayers();
+        const positionIndex: number = this.countReadyToStartPlayers() % this.startCoordinates.length;
         this.getPlayerBySocket(socket).data = {
             item: {
                 id: +data.id,
