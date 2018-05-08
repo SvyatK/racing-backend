@@ -25,7 +25,7 @@ async function bootstrap() {
         .setTitle('Racing Backend')
         .setDescription('The racing backend API description')
         .setVersion('1.0')
-        .addTag('race')
+        .setSchemes(APP_CONFIG.server.useSSL ? 'https' : 'http')
         .build();
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup('/api', app, document);
