@@ -20,7 +20,10 @@ export class AuthService {
                 hashSync(
                     registerDTO.password,
                     genSaltSync(10)
-                )
+                ),
+                registerDTO.login,
+                registerDTO.login,
+                'us'
             );
         } catch (err) {
             throw new HttpException('An error occured during user saving', 500);

@@ -8,10 +8,13 @@ export class UserDao {
     constructor(@Inject('UserModelToken') private readonly userModel: Model<IUser>) {
     }
 
-    async createUser(login: string, password: string): Promise<IUser> {
+    async createUser(login: string, password: string, firstName: string, lastName: string, countryCode: string): Promise<IUser> {
         return this.userModel.create({
             login,
-            password
+            password,
+            firstName,
+            lastName,
+            countryCode
         });
     }
 
