@@ -14,12 +14,32 @@ export class UserDataDTO {
     @IsString()
     readonly login: string;
 
+    @ApiModelProperty({ type: String })
+    @IsString()
+    readonly firstName: string;
+
+    @ApiModelProperty({ type: String })
+    @IsString()
+    readonly lastName: string;
+
+    @ApiModelProperty({ type: String })
+    @IsString()
+    readonly displayName: string;
+
+    @ApiModelProperty({ type: String })
+    @IsString()
+    readonly countryCode: string;
+
+    @ApiModelProperty({ type: String })
+    @IsString()
+    readonly avatar: string;
+
     static fromUser(user: IUser): UserDataDTO {
-        return _.pick(user, [ '_id', 'login' ]);
+        return _.pick(user, [ '_id', 'login', 'firstName', 'lastName', 'displayName', 'countryCode', 'avatar' ]);
     }
 
     static fromOwnUserDataDTO(ownUserData: OwnUserDataDTO): UserDataDTO {
-        return _.pick(ownUserData, [ '_id', 'login' ]);
+        return _.pick(ownUserData, [ '_id', 'login', 'firstName', 'lastName', 'displayName', 'countryCode', 'avatar' ]);
     }
 
 }
