@@ -6,8 +6,8 @@
       <authoring_tool>OpenCOLLADA for 3ds Max;  Version: 1.6;  Revision: 62</authoring_tool>
       <source_data>file:///E:/Development/projects/AG/racing-client/asset-sources/map-scenes/default-map.max</source_data>
     </contributor>
-    <created>2018-05-05T01:52:45</created>
-    <modified>2018-05-05T01:52:45</modified>
+    <created>2018-05-10T02:32:47</created>
+    <modified>2018-05-10T02:32:47</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -797,39 +797,6 @@
     <visual_scene id="MaxScene">
       <node name="EnvironmentAmbientLight">
         <instance_light url="#EnvironmentAmbientLight"/>
-      </node>
-      <node id="node-maphelper_checkpoint_00_r15" name="maphelper_checkpoint_00_r15">
-        <matrix>1 0 0 142.1347 0 1 0 -137.3532 0 0 1 0 0 0 0 1</matrix>
-        <extra>
-          <technique profile="OpenCOLLADA">
-            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
-            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
-            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
-            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
-          </technique>
-        </extra>
-      </node>
-      <node id="node-maphelper_checkpoint_01_r15" name="maphelper_checkpoint_01_r15">
-        <matrix>1 0 0 -102.9445 0 1 0 -28.31444 0 0 1 0 0 0 0 1</matrix>
-        <extra>
-          <technique profile="OpenCOLLADA">
-            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
-            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
-            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
-            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
-          </technique>
-        </extra>
-      </node>
-      <node id="node-maphelper_checkpoint_02_r15" name="maphelper_checkpoint_02_r15">
-        <matrix>1 0 0 103.1499 0 1 0 -4.281507 0 0 1 0 0 0 0 1</matrix>
-        <extra>
-          <technique profile="OpenCOLLADA">
-            <cast_shadows sid="cast_shadows" type="bool">1</cast_shadows>
-            <receive_shadows sid="receive_shadows" type="bool">1</receive_shadows>
-            <primary_visibility sid="primary_visibility" type="bool">1</primary_visibility>
-            <secondary_visibility sid="secondary_visibility" type="bool">1</secondary_visibility>
-          </technique>
-        </extra>
       </node>
       <node id="node-maphelper_player-position_00" name="maphelper_player-position_00">
         <matrix>0.9959842 0.08952915 0 96.2466 -0.08952915 0.9959842 0 -20.62096 0 0 1 0 0 0 0 1</matrix>
