@@ -571,10 +571,6 @@ Apache License
  See the License for the specific language governing permissions and
  limitations under the License.
 
-three-orbit-controls@82.1.0
-MIT
-MIT
-
 three-sky@1.0.0
 MIT
 The MIT License
