@@ -1,11 +1,13 @@
-import { CanActivate, ExecutionContext, Guard, HttpException, HttpStatus } from '@nestjs/common';
+import {CanActivate, ExecutionContext, HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import {Observable} from 'rxjs/index';
 
-@Guard()
+@Injectable()
 export class AuthenticationGuard implements CanActivate {
     constructor() {
     }
 
-    canActivate(req, context: ExecutionContext): boolean {
+    canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
+        const req = context.getArgs()[0];
         if ( req.session && req.session.user ) {
             return true;
         }

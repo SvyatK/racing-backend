@@ -1,13 +1,14 @@
-import { Request as ExpressRequest } from 'express';
-import { Body, Controller, Post, Req } from '@nestjs/common';
-import { ApiOperation, ApiProduces, ApiResponse } from '@nestjs/swagger';
-import { RegisterDTO } from '../dto/requests/register.dto';
-import { AuthService } from '../services/auth.service';
-import { OwnUserDataDTO } from '../dto/responses/own-user-data.dto';
-import { LoginDTO } from '../dto/requests/login.dto';
+import {Request as ExpressRequest} from 'express';
+import {Body, Controller, Post, Req} from '@nestjs/common';
+import {ApiOperation, ApiProduces, ApiResponse} from '@nestjs/swagger';
+import {RegisterDTO} from '../dto/requests/register.dto';
+import {AuthService} from '../services/auth.service';
+import {OwnUserDataDTO} from '../dto/responses/own-user-data.dto';
+import {LoginDTO} from '../dto/requests/login.dto';
 
 @Controller('auth')
 export class AuthController {
+
     constructor(private readonly authService: AuthService) {
     }
 

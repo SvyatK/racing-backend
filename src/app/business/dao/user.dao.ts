@@ -1,8 +1,8 @@
-import { Model } from 'mongoose';
-import { Component, Inject } from '@nestjs/common';
-import { IUser } from '../interfaces/user.interface';
+import {Model} from 'mongoose';
+import {Inject, Injectable} from '@nestjs/common';
+import {IUser} from '../interfaces/user.interface';
 
-@Component()
+@Injectable()
 export class UserDao {
 
     constructor(@Inject('UserModelToken') private readonly userModel: Model<IUser>) {

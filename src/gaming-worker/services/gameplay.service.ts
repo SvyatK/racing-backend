@@ -1,13 +1,15 @@
-import { Component } from '@nestjs/common';
-import { GamingServerMainService } from './gaming-server-main.service';
+import {Injectable} from '@nestjs/common';
+import {GamingServerMainService} from './gaming-server-main.service';
 import PlayerModel from '../models/player.model';
-import { GameState } from '../../app/business/interfaces/enum/game-state.enum';
-import { UserDataDTO } from '../../app/dto/responses/user-data.dto';
+import {GameState} from '../../app/business/interfaces/enum/game-state.enum';
+import {UserDataDTO} from '../../app/dto/responses/user-data.dto';
 import PlayerDataDTO from '../dto/player-data.dto';
 import GamingWorkerEnvironment from '../gaming-worker-environment';
 import StepDataDto from '../dto/step-data.dto';
+import LobbyDataDTO from '../dto/lobby-data.dto';
+import {CarDataDTO} from '../../app/dto/responses/car-data.dto';
 
-@Component()
+@Injectable()
 export class GameplayService {
 
     private players: PlayerModel[] = [];
@@ -32,14 +34,25 @@ export class GameplayService {
     }
     ];
 
+    public lobbyData: LobbyDataDTO = new LobbyDataDTO();
+
     constructor(private readonly gamingServerMainService: GamingServerMainService) {
+        this.lobbyData.lobbyId = GamingWorkerEnvironment.LOBBY_ID;
+        this.lobbyData.map = 'nowhere';
+        this.lobbyData.slots = Array<PlayerDataDTO>(GamingWorkerEnvironment.PLAYERS_COUNT)
+            .fill(null);
     }
 
     async clientConnected(io: SocketIO.Server, socket: SocketIO.Socket): Promise<void> {
         if ( this.players.length === GamingWorkerEnvironment.PLAYERS_COUNT ) {
             socket.disconnect(true);
         }
-        const user: UserDataDTO = UserDataDTO.fromOwnUserDataDTO(socket.client.request.session.user);
+        let user: UserDataDTO;
+        try {
+            user = UserDataDTO.fromOwnUserDataDTO(socket.client.request.session.user);
+        } catch (err) {
+            socket.disconnect(true);
+        }
         this.players.push(new PlayerModel(socket, user, null));
         if ( user._id === GamingWorkerEnvironment.OWNER_ID ) {
             this.gamingServerMainService.onOwnerConnected();
@@ -48,12 +61,7 @@ export class GameplayService {
             this.gamingServerMainService.reportLobbyFull();
         }
         console.log(`Client '${user.login}' connected via socket connection ${socket.client.id}`);
-        socket.emit(
-            'addedToLobby',
-            this.players.map(
-                (player: PlayerModel): PlayerDataDTO => PlayerDataDTO.fromPlayerModel(player)
-            )
-        );
+        socket.emit('lobbyDataUpdate', this.lobbyData);
     }
 
     async clientDisconnected(io: SocketIO.Server, socket: SocketIO.Socket): Promise<void> {
@@ -70,13 +78,41 @@ export class GameplayService {
         }
     }
 
+    async takeSlot(io: SocketIO.Server, socket: SocketIO.Socket, slotIndex: number): Promise<boolean> {
+        const playerModel: PlayerModel = this.getPlayerBySocket(socket);
+        const currentPlayerSlot: number = this.getPlayerSlot(playerModel);
+        if (currentPlayerSlot === slotIndex) {
+            return true;
+        }
+        let playerData: PlayerDataDTO;
+        if (currentPlayerSlot > -1) {
+            playerData = this.lobbyData.slots[currentPlayerSlot];
+            this.lobbyData.slots[currentPlayerSlot] = null;
+        } else {
+            playerData = PlayerDataDTO.fromPlayerModel(playerModel);
+        }
+        this.lobbyData.slots[slotIndex] = playerData;
+        this.sendUpdates(io);
+        return true;
+    }
+
+    async selectCar(io: SocketIO.Server, socket: SocketIO.Socket, carData: CarDataDTO): Promise<boolean> {
+        const playerModel: PlayerModel = this.getPlayerBySocket(socket);
+        const currentPlayerSlot: number = this.getPlayerSlot(playerModel);
+        this.lobbyData.slots[currentPlayerSlot].car = carData;
+        // TODO stopped dev here
+        this.sendUpdates(io);
+        return true;
+    }
+
     // TODO data type
-    async playerReadyToStart(io: SocketIO.Server, socket: SocketIO.Socket, data: any): Promise<void> {
+    async playerReadyToStart(io: SocketIO.Server, socket: SocketIO.Socket): Promise<void> {
         console.log(`${socket.id} ready to start`);
         const positionIndex: number = this.countReadyToStartPlayers() % this.startCoordinates.length;
-        this.getPlayerBySocket(socket).data = {
+        const player: PlayerModel = this.getPlayerBySocket(socket);
+        player.data = {
             item: {
-                id: +data.id,
+                id: this.getPlayerSlot(player),
                 trajectory: null,
                 finalCarProperties: {
                     position: {
@@ -98,16 +134,12 @@ export class GameplayService {
     }
 
     async nextStep(io: SocketIO.Server, socket: SocketIO.Socket, data: StepDataDto): Promise<void> {
-        let currentContainer;
-        //replace item data
-        for (let i = 0; i < this.players.length; i++) {
-            let container = this.players[ i ].data;
-            if ( data.id == container.item.id ) {
-                this.players[ i ].data.item = data;
-                this.players[ i ].data.ready = true;
-                currentContainer = container;
-            }
+        const player: PlayerModel = this.getPlayerBySocket(socket);
+        if (player.data.item.id !== data.id) {
+            throw new Error('player.data.item.id !== data.id');
         }
+        player.data.item = data;
+        player.data.ready = true;
         //get ready items
         let clientsReady = this.countReadyPlayers();
         if ( clientsReady >= GamingWorkerEnvironment.PLAYERS_COUNT ) {
@@ -135,9 +167,19 @@ export class GameplayService {
         }
     }
 
+    private sendUpdates(io: SocketIO.Server): void {
+        io.sockets.emit('lobbyDataUpdate', this.lobbyData);
+    }
+
     private getPlayerBySocket(socket: SocketIO.Socket): PlayerModel {
         return this.players.find((player: PlayerModel): boolean => {
             return (player.connection.client.id === socket.client.id);
+        });
+    }
+
+    private getPlayerSlot(player: PlayerModel): number {
+        return this.lobbyData.slots.findIndex((inSlotPlayer: PlayerDataDTO): boolean => {
+            return inSlotPlayer && inSlotPlayer.playerId === player.connection.client.id;
         });
     }
 

@@ -1,10 +1,10 @@
-import { Model } from 'mongoose';
-import { Component, Inject } from '@nestjs/common';
-import { ILobby } from '../interfaces/lobby.interface';
-import { IUser } from '../interfaces/user.interface';
-import { GameState } from '../interfaces/enum/game-state.enum';
+import {Model} from 'mongoose';
+import {Inject, Injectable} from '@nestjs/common';
+import {ILobby} from '../interfaces/lobby.interface';
+import {IUser} from '../interfaces/user.interface';
+import {GameState} from '../interfaces/enum/game-state.enum';
 
-@Component()
+@Injectable()
 export class LobbyDao {
 
     constructor(@Inject('LobbyModelToken') private readonly lobbyModel: Model<ILobby>) {

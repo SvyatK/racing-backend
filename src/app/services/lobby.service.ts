@@ -1,19 +1,19 @@
-import { Component, HttpException, HttpStatus } from '@nestjs/common';
-import { Request as ExpressRequest } from 'express';
-import { LobbyDTO } from '../dto/responses/lobby.dto';
-import { IUser } from '../business/interfaces/user.interface';
-import { UserDao } from '../business/dao/user.dao';
-import { ILobby } from '../business/interfaces/lobby.interface';
-import { LobbyDao } from '../business/dao/lobby.dao';
-import { ChildProcess, fork } from 'child_process';
+import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
+import {Request as ExpressRequest} from 'express';
+import {LobbyDTO} from '../dto/responses/lobby.dto';
+import {IUser} from '../business/interfaces/user.interface';
+import {UserDao} from '../business/dao/user.dao';
+import {ILobby} from '../business/interfaces/lobby.interface';
+import {LobbyDao} from '../business/dao/lobby.dao';
+import {ChildProcess, fork} from 'child_process';
 import * as path from 'path';
-import { GamingServersManager } from '../managers/gaming-servers.manager';
-import { ChildProcessMessage } from '../../gaming-worker/consts/child-process-message.const';
-import { AppUtils } from '../utils/app.utils';
-import { GameState } from '../business/interfaces/enum/game-state.enum';
-import { LobbyInitialDataDTO } from '../dto/requests/lobby-initial-data.dto';
+import {GamingServersManager} from '../managers/gaming-servers.manager';
+import {ChildProcessMessage} from '../../gaming-worker/consts/child-process-message.const';
+import {AppUtils} from '../utils/app.utils';
+import {GameState} from '../business/interfaces/enum/game-state.enum';
+import {LobbyInitialDataDTO} from '../dto/requests/lobby-initial-data.dto';
 
-@Component()
+@Injectable()
 export class LobbyService {
     constructor(private readonly userDao: UserDao,
                 private readonly lobbyDao: LobbyDao,
@@ -95,9 +95,19 @@ export class LobbyService {
     async startGamingServer(lobbyModel: ILobby, port: number, owner: IUser): Promise<ChildProcess> {
         // automatically rejects in 10 seconds if nothing happen
         return new Promise<ChildProcess>(async (resolve, reject) => {
-            const forked: ChildProcess = fork(path.join(__dirname, '../../../index-worker.js'), [ lobbyModel._id, port, owner._id,
-                lobbyModel.playersCount
-            ]);
+            const forked: ChildProcess = fork(path.join(__dirname, '../../../index-worker.js'),
+                [
+                    lobbyModel._id,
+                    port,
+                    owner._id,
+                    lobbyModel.playersCount,
+                ],
+                AppUtils.isInDebugMode() ?
+                    {
+                        execArgv: ['--inspect-brk=' + (Math.floor(Math.random() * 10000) + 40000)]
+                    } :
+                    {}
+            );
             try {
                 await AppUtils.doWithFailTimeout<void>(
                     new Promise<void>((resolve, reject) => {
@@ -110,7 +120,7 @@ export class LobbyService {
                             }
                         });
                     }),
-                    10000
+                    1000000
                 );
                 resolve(forked);
             } catch (err) {

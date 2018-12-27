@@ -1,8 +1,8 @@
-import { Model } from 'mongoose';
-import { Component, Inject } from '@nestjs/common';
-import { ICar } from '../interfaces/car.interface';
+import {Model} from 'mongoose';
+import {Inject, Injectable} from '@nestjs/common';
+import {ICar} from '../interfaces/car.interface';
 
-@Component()
+@Injectable()
 export class CarDao {
 
     constructor(@Inject('CarModelToken') private readonly carModel: Model<ICar>) {

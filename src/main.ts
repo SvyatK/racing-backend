@@ -1,12 +1,12 @@
-import { NestFactory } from '@nestjs/core';
-import { ApplicationModule } from './app.module';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import {NestFactory} from '@nestjs/core';
+import {ApplicationModule} from './app.module';
+import {DocumentBuilder, SwaggerModule} from '@nestjs/swagger';
 import * as express from 'express';
 import * as fs from 'fs';
-import { APP_CONFIG } from './app/conf/config';
-import { NestApplicationOptions } from '@nestjs/common/interfaces/nest-application-options.interface';
-import { ValidationPipe } from '@nestjs/common';
-import { NotFoundExceptionFilter } from './app/middlewares/filters/not-found-exception.filter';
+import {APP_CONFIG} from './app/conf/config';
+import {NestApplicationOptions} from '@nestjs/common/interfaces/nest-application-options.interface';
+import {ValidationPipe} from '@nestjs/common';
+import {NotFoundExceptionFilter} from './app/middlewares/filters/not-found-exception.filter';
 
 async function bootstrap() {
     console.log(`Starting app. Environment: ${APP_CONFIG.env}`);
@@ -30,6 +30,10 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup('/api', app, document);
     await app.listen(APP_CONFIG.server.port);
+
+    setTimeout(() => {
+        app;
+    }, 5000);
 }
 
 bootstrap();

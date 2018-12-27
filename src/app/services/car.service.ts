@@ -1,9 +1,9 @@
-import { Component } from '@nestjs/common';
-import { CarDao } from '../business/dao/car.dao';
-import { CarDataDTO } from '../dto/responses/car-data.dto';
-import { ICar } from '../business/interfaces/car.interface';
+import {Injectable} from '@nestjs/common';
+import {CarDao} from '../business/dao/car.dao';
+import {CarDataDTO} from '../dto/responses/car-data.dto';
+import {ICar} from '../business/interfaces/car.interface';
 
-@Component()
+@Injectable()
 export class CarService {
     constructor(private readonly carDao: CarDao) {
     }

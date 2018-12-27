@@ -1,6 +1,6 @@
-import { Middleware, NestMiddleware } from '@nestjs/common';
-import { RequestHandler } from 'express';
-import { GatewayMiddleware } from '@nestjs/websockets';
+import {Injectable, MiddlewareFunction, NestMiddleware} from '@nestjs/common';
+import {RequestHandler} from 'express';
+import {GatewayMiddleware} from '@nestjs/websockets';
 import session = require('express-session');
 import connectRedis = require('connect-redis');
 
@@ -17,14 +17,14 @@ const SESSION_MIDDLEWARE_FUNCTION: RequestHandler = session({
     cookie: { secure: false }
 });
 
-@Middleware()
+@Injectable()
 export class SessionMiddleware implements NestMiddleware {
-    resolve(...args: any[]): RequestHandler {
+    resolve(...args: any[]): MiddlewareFunction {
         return SESSION_MIDDLEWARE_FUNCTION;
     }
 }
 
-@Middleware()
+@Injectable()
 export class SocketSessionMiddleware implements GatewayMiddleware {
     public resolve(): (socket, next) => void {
         return (socket, next) => {

@@ -22,4 +22,8 @@ export class AppUtils {
         ]);
     }
 
+    static isInDebugMode(): boolean {
+        return typeof global.v8debug === 'object' || /--debug|--inspect/.test(process.execArgv.join(' '));
+    }
+
 }

@@ -1,6 +1,6 @@
-import { Component } from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 
-@Component()
+@Injectable()
 export class GamingServersManager {
 
     private workersMap: Map<number, string>;
@@ -37,7 +37,7 @@ export class GamingServersManager {
         this.emptyPortsSet.add(port);
     }
 
-    private getRandomEmptyPort (): number {
+    private getRandomEmptyPort(): number {
         let items: number[] = Array.from(this.emptyPortsSet);
         return items[Math.floor(Math.random() * items.length)];
     }

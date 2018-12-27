@@ -1,11 +1,11 @@
-import { WorkerModule } from './worker.module';
-import { NestApplication, NestFactory } from '@nestjs/core';
-import { GamingServerMainService } from './services/gaming-server-main.service';
+import {WorkerModule} from './worker.module';
+import {NestFactory} from '@nestjs/core';
+import {GamingServerMainService} from './services/gaming-server-main.service';
 import * as fs from 'fs';
 import * as express from 'express';
 import GamingWorkerEnvironment from './gaming-worker-environment';
-import { APP_CONFIG } from '../app/conf/config';
-import { NestApplicationOptions } from '@nestjs/common/interfaces/nest-application-options.interface';
+import {APP_CONFIG} from '../app/conf/config';
+import {NestApplicationOptions} from '@nestjs/common/interfaces/nest-application-options.interface';
 
 async function bootstrap() {
     console.log(`Starting gaming worker. Global environment: ${APP_CONFIG.env}. Port: ${GamingWorkerEnvironment.PORT}. Players: ${GamingWorkerEnvironment.PLAYERS_COUNT}`);
@@ -17,7 +17,7 @@ async function bootstrap() {
             ca: fs.readFileSync(APP_CONFIG.server.ssl.ca)
         };
     }
-    const app: NestApplication = await NestFactory.create(WorkerModule, express(), appOptions);
+    const app = await NestFactory.create(WorkerModule, express(), appOptions);
     await app.listen(GamingWorkerEnvironment.PORT);
 
     const gamingServerMainService: GamingServerMainService = app.get('GamingServerMainService');

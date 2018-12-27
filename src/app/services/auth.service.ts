@@ -1,13 +1,13 @@
-import { Request as ExpressRequest } from 'express';
-import { Component, HttpException } from '@nestjs/common';
-import { RegisterDTO } from '../dto/requests/register.dto';
-import { OwnUserDataDTO } from '../dto/responses/own-user-data.dto';
-import { UserDao } from '../business/dao/user.dao';
-import { compare, genSaltSync, hashSync } from 'bcrypt';
-import { IUser } from '../business/interfaces/user.interface';
-import { LoginDTO } from '../dto/requests/login.dto';
+import {Request as ExpressRequest} from 'express';
+import {HttpException, Injectable} from '@nestjs/common';
+import {RegisterDTO} from '../dto/requests/register.dto';
+import {OwnUserDataDTO} from '../dto/responses/own-user-data.dto';
+import {UserDao} from '../business/dao/user.dao';
+import {compare, genSaltSync, hashSync} from 'bcrypt';
+import {IUser} from '../business/interfaces/user.interface';
+import {LoginDTO} from '../dto/requests/login.dto';
 
-@Component()
+@Injectable()
 export class AuthService {
     constructor(private readonly userDao: UserDao) {
     }
