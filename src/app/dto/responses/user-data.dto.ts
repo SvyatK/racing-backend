@@ -1,14 +1,14 @@
-import { ApiModelProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
-import { IUser } from '../../business/interfaces/user.interface';
+import {ApiModelProperty} from '@nestjs/swagger';
+import {IsInt, IsString} from 'class-validator';
 import * as _ from 'lodash';
-import { OwnUserDataDTO } from './own-user-data.dto';
+import {OwnUserDataDTO} from './own-user-data.dto';
+import UserEntity from '../../database/entities/user.entity';
 
 export class UserDataDTO {
 
-    @ApiModelProperty({ type: String })
-    @IsString()
-    readonly _id: string;
+    @ApiModelProperty({ type: Number })
+    @IsInt()
+    readonly id: number;
 
     @ApiModelProperty({ type: String })
     @IsString()
@@ -34,12 +34,12 @@ export class UserDataDTO {
     @IsString()
     readonly avatar: string;
 
-    static fromUser(user: IUser): UserDataDTO {
-        return _.pick(user, [ '_id', 'login', 'firstName', 'lastName', 'displayName', 'countryCode', 'avatar' ]);
+    static fromUser(user: UserEntity): UserDataDTO {
+        return _.pick(user, ['id', 'login', 'firstName', 'lastName', 'displayName', 'countryCode', 'avatar']);
     }
 
     static fromOwnUserDataDTO(ownUserData: OwnUserDataDTO): UserDataDTO {
-        return _.pick(ownUserData, [ '_id', 'login', 'firstName', 'lastName', 'displayName', 'countryCode', 'avatar' ]);
+        return _.pick(ownUserData, ['id', 'login', 'firstName', 'lastName', 'displayName', 'countryCode', 'avatar']);
     }
 
 }

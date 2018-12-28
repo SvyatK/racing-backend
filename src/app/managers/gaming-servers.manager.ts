@@ -3,23 +3,23 @@ import {Injectable} from '@nestjs/common';
 @Injectable()
 export class GamingServersManager {
 
-    private workersMap: Map<number, string>;
+    private workersMap: Map<number, number>;
 
     private emptyPortsSet: Set<number>;
 
     constructor() {
-        this.workersMap = new Map<number, string>();
+        this.workersMap = new Map<number, number>();
         this.emptyPortsSet = new Set<number>();
         for (let i = 3001; i < 4000; i++) {
             this.emptyPortsSet.add(i);
         }
     }
 
-    public getRunningLobbyId(port: number): string {
+    public getRunningLobbyId(port: number): number {
         return this.workersMap.get(port);
     }
 
-    public acquirePort(lobbyId: string): number {
+    public acquirePort(lobbyId: number): number {
         if ( this.emptyPortsSet.size === 0 ) {
             return -1;
         }
@@ -30,7 +30,7 @@ export class GamingServersManager {
         return port;
     }
 
-    public releasePort(lobbyId: string): void {
+    public releasePort(lobbyId: number): void {
         let port: number = +([...this.workersMap].find(([, v]) => v === lobbyId) || [])[0];
         console.log(`Releasing port ${port}`);
         this.workersMap.delete(port);

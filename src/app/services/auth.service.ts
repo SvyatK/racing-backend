@@ -2,10 +2,10 @@ import {Request as ExpressRequest} from 'express';
 import {HttpException, Injectable} from '@nestjs/common';
 import {RegisterDTO} from '../dto/requests/register.dto';
 import {OwnUserDataDTO} from '../dto/responses/own-user-data.dto';
-import {UserDao} from '../business/dao/user.dao';
+import {UserDao} from '../database/dao/user.dao';
 import {compare, genSaltSync, hashSync} from 'bcrypt';
-import {IUser} from '../business/interfaces/user.interface';
 import {LoginDTO} from '../dto/requests/login.dto';
+import UserEntity from '../database/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -13,7 +13,7 @@ export class AuthService {
     }
 
     async register(req: ExpressRequest, registerDTO: RegisterDTO): Promise<OwnUserDataDTO> {
-        let user: IUser;
+        let user: UserEntity;
         try {
             user = await this.userDao.createUser(
                 registerDTO.login,
@@ -34,7 +34,7 @@ export class AuthService {
     }
 
     async login(req: ExpressRequest, loginDTO: LoginDTO): Promise<OwnUserDataDTO> {
-        let user: IUser;
+        let user: UserEntity;
         try {
             user = await this.userDao.getUserByLogin(loginDTO.login);
         } catch (err) {
@@ -52,7 +52,7 @@ export class AuthService {
     }
 
     private setSessionUser(req: ExpressRequest, ownUserData: OwnUserDataDTO): void {
-        req.session.key = ownUserData._id;
+        req.session.key = ownUserData.id;
         req.session.user = ownUserData;
     }
 

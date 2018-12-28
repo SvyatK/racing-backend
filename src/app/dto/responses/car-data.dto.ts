@@ -1,7 +1,7 @@
-import { ApiModelProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import {ApiModelProperty} from '@nestjs/swagger';
+import {IsNumber, IsString} from 'class-validator';
 import * as _ from 'lodash';
-import { ICar } from '../../business/interfaces/car.interface';
+import CarEntity from '../../database/entities/car.entity';
 
 export class CarDataDTO {
 
@@ -37,7 +37,7 @@ export class CarDataDTO {
     @IsNumber()
     readonly mass: number;
 
-    static fromCar(car: ICar): CarDataDTO {
+    static fromCar(car: CarEntity): CarDataDTO {
         return _.pick(car, [ 'name', 'image', 'steering', 'dragConstant', 'wheelFrictionConstant', 'engineForce', 'brakingForce', 'mass' ]);
     }
 

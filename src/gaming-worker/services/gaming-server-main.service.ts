@@ -1,6 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {ChildProcessMessage} from '../consts/child-process-message.const';
-import {GameState} from '../../app/business/interfaces/enum/game-state.enum';
+import {GameState} from '../../app/database/datatypes/game-state.enum';
 import Timer = NodeJS.Timer;
 
 @Injectable()

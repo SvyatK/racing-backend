@@ -1,0 +1,60 @@
+- model: Car
+  data:
+    name: Ford Focus RS
+    image: http://i.infocar.ua/i/1/4596/300x198.jpg
+    steering: 20
+    dragConstant: 0.4257
+    wheelFrictionConstant: 12.8
+    engineForce: 19440
+    brakingForce: 26000
+    mass: 1350
+- model: Car
+  data:
+    name: Volkswagen Golf R
+    image: http://i.infocar.ua/i/1/5095/300x198.jpg
+    steering: 20
+    dragConstant: 0.4257
+    wheelFrictionConstant: 12.8
+    engineForce: 19440
+    brakingForce: 26000
+    mass: 1350
+- model: Car
+  data:
+    name: KIA Ceed
+    image: http://i.infocar.ua/i/1/4652/300x198.jpg
+    steering: 20
+    dragConstant: 0.4257
+    wheelFrictionConstant: 12.8
+    engineForce: 19440
+    brakingForce: 26000
+    mass: 1350
+- model: Car
+  data:
+    name: Lexus RX 350
+    image: http://i.infocar.ua/i/1/4617/300x198.jpg
+    steering: 20
+    dragConstant: 0.4257
+    wheelFrictionConstant: 12.8
+    engineForce: 19440
+    brakingForce: 26000
+    mass: 1350
+- model: Car
+  data:
+    name: Ford Fiesta
+    image: http://i.infocar.ua/i/1/2502/300x198.jpg
+    steering: 20
+    dragConstant: 0.4257
+    wheelFrictionConstant: 12.8
+    engineForce: 19440
+    brakingForce: 26000
+    mass: 1350
+- model: Car
+  data:
+    name: Ford Focus Wagon
+    image: http://i.infocar.ua/i/1/390/300x198.jpg
+    steering: 20
+    dragConstant: 0.4257
+    wheelFrictionConstant: 12.8
+    engineForce: 19440
+    brakingForce: 26000
+    mass: 1350

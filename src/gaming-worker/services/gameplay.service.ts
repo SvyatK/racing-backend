@@ -1,13 +1,13 @@
 import {Injectable} from '@nestjs/common';
 import {GamingServerMainService} from './gaming-server-main.service';
 import PlayerModel from '../models/player.model';
-import {GameState} from '../../app/business/interfaces/enum/game-state.enum';
 import {UserDataDTO} from '../../app/dto/responses/user-data.dto';
 import PlayerDataDTO from '../dto/player-data.dto';
 import GamingWorkerEnvironment from '../gaming-worker-environment';
 import StepDataDto from '../dto/step-data.dto';
 import LobbyDataDTO from '../dto/lobby-data.dto';
 import {CarDataDTO} from '../../app/dto/responses/car-data.dto';
+import {GameState} from '../../app/database/datatypes/game-state.enum';
 
 @Injectable()
 export class GameplayService {
@@ -54,7 +54,7 @@ export class GameplayService {
             socket.disconnect(true);
         }
         this.players.push(new PlayerModel(socket, user, null));
-        if ( user._id === GamingWorkerEnvironment.OWNER_ID ) {
+        if (user.id === GamingWorkerEnvironment.OWNER_ID) {
             this.gamingServerMainService.onOwnerConnected();
         }
         if ( this.players.length === GamingWorkerEnvironment.PLAYERS_COUNT ) {
