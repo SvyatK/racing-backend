@@ -34,7 +34,7 @@ export class OwnUserDataDTO {
     readonly avatar: string;
 
     static fromUser(user: UserEntity): OwnUserDataDTO {
-        return _.pick(user, ['id', 'login', 'firstName', 'lastName', 'displayName', 'countryCode', 'avatar']);
+        return _.pick(user, ['id', 'login', 'firstName', 'lastName', 'displayName', 'countryCode', 'avatar']) as OwnUserDataDTO;
     }
 
 }

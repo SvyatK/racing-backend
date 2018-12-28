@@ -35,11 +35,11 @@ export class UserDataDTO {
     readonly avatar: string;
 
     static fromUser(user: UserEntity): UserDataDTO {
-        return _.pick(user, ['id', 'login', 'firstName', 'lastName', 'displayName', 'countryCode', 'avatar']);
+        return _.pick(user, ['id', 'login', 'firstName', 'lastName', 'displayName', 'countryCode', 'avatar']) as UserDataDTO;
     }
 
     static fromOwnUserDataDTO(ownUserData: OwnUserDataDTO): UserDataDTO {
-        return _.pick(ownUserData, ['id', 'login', 'firstName', 'lastName', 'displayName', 'countryCode', 'avatar']);
+        return _.pick(ownUserData, ['id', 'login', 'firstName', 'lastName', 'displayName', 'countryCode', 'avatar']) as UserDataDTO;
     }
 
 }
