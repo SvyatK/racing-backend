@@ -1,16 +1,18 @@
-import { UserDataDTO } from '../../app/dto/responses/user-data.dto';
-import StepDataDto from '../dto/step-data.dto';
+import {UserDataDTO} from '../../app/dto/responses/user-data.dto';
+import {CarDataDTO} from '../../app/dto/responses/car-data.dto';
+import StepDataModel from './step-data.model';
 
 export default class PlayerModel {
 
-    public userModel: UserDataDTO;
-    public connection: SocketIO.Socket;
-    // TODO adjust structure here; add types
-    public data: { item: StepDataDto, ready: boolean, finished: boolean };
-
-    constructor(connection: SocketIO.Socket, model: UserDataDTO, data: { item: StepDataDto, ready: boolean, finished: boolean }) {
-        this.userModel = model;
-        this.connection = connection;
-        this.data = data;
+    constructor(
+        public connectionId: string,
+        public userModel: UserDataDTO,
+        public isLobbyOwner: boolean = false,
+        public car: CarDataDTO = null,
+        public slot: number = -1,
+        public isLoading: boolean = true,
+        public isReadyToStart: boolean = true, // not used right now, automatically ready as soon as loaded map and cars
+        public currentStep: StepDataModel = null,
+    ) {
     }
 }
