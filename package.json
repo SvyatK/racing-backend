@@ -45,6 +45,7 @@
     "sequelize-typescript": "^0.6.6",
     "serve-static": "^1.13.2",
     "socket.io": "^2.0.4",
+    "three-collada-loader": "0.0.1",
     "ts-node": "^6.0.5",
     "typescript": "^2.6.2"
   },

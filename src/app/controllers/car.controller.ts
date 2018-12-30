@@ -5,7 +5,6 @@ import { CarService } from '../services/car.service';
 import { AuthenticationGuard } from '../middlewares/guards/authentication.guard';
 
 @Controller('car')
-@UseGuards(AuthenticationGuard)
 export class CarController {
     constructor(private readonly carService: CarService) {
     }

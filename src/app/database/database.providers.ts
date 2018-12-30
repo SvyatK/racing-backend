@@ -25,6 +25,12 @@ export const databaseProviders = [
                     ],
                     sequelize.models,
                 );
+                sequelizeFixtures.loadFiles(
+                    [
+                        './src/app/database/fixtures/maps.yaml',
+                    ],
+                    sequelize.models,
+                );
             }
             return sequelize;
         },

@@ -1,0 +1,4 @@
+- model: Map
+  data:
+    name: Map1
+    url: https://s3.us-east-2.amazonaws.com/racing-demo-bucket/maps/map1/

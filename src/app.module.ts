@@ -3,6 +3,8 @@ import {AuthService} from './app/services/auth.service';
 import {DatabaseModule} from './app/database/database.module';
 import {CarController} from './app/controllers/car.controller';
 import {CarService} from './app/services/car.service';
+import {MapService} from './app/services/map.service';
+import {MapController} from './app/controllers/map.controller';
 import {CorsMiddleware} from './app/middlewares/cors.middleware';
 import {SessionMiddleware} from './app/middlewares/session.middleware';
 import {AuthController} from './app/controllers/auth.controller';
@@ -18,11 +20,13 @@ import {ServeStaticMiddleware} from '@nest-middlewares/serve-static';
     controllers: [
         AuthController,
         CarController,
+        MapController,
         LobbyController
     ],
     providers: [
         AuthService,
         CarService,
+        MapService,
         LobbyService,
         GamingServersManager
     ]
